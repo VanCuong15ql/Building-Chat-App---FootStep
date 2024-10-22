@@ -1,3 +1,5 @@
+// fixed data for front-end build
+
 import { faker } from "@faker-js/faker";
 import {
   ChatCircleDots,
@@ -129,6 +131,7 @@ const ChatList = [
   },
 ];
 
+// For conservation
 const Chat_History = [
   {
     type: "msg",
