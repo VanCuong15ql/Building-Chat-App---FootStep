@@ -1,3 +1,5 @@
+// fixed data for front-end build
+
 import { faker } from "@faker-js/faker";
 import {
   ChatCircleDots,
@@ -19,7 +21,7 @@ const Profile_Menu = [
     icon: <Gear />,
   },
   {
-    title: "Profile",
+    title: "Logout",
     icon: <SignOut />,
   },
 ];
@@ -129,6 +131,7 @@ const ChatList = [
   },
 ];
 
+// For conservation
 const Chat_History = [
   {
     type: "msg",

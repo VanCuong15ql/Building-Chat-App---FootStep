@@ -131,7 +131,7 @@ const Chats = () => {
                 <Stack
                     spacing={2}
                     direction="column"
-                    sx={{ flexGrow: 1, overflow: "scroll", height: "100%" }}>
+                    sx={{ flexGrow: 1, overflowY: "scroll", height: "100%" }}>
                     {/* nice scroll is out of date */}
                     <SimpleBarStyle timeout={500} clickOnTrack={false}>
                         <Stack spacing={2.4}>
