@@ -11,24 +11,26 @@ import {
   Link,
   Stack,
 } from "@mui/material";
-import{Link as RouterLink} from "react-router-dom"
+import { Link as RouterLink } from "react-router-dom";
 import { Eye, EyeSlash } from "phosphor-react";
 
-const LoginForm = () => {
+const NewPasswordForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const loginSchema = Yup.object().shape({
-    email: Yup.string()
-      .required("Email is required")
-      .email("email must be a valid email address"),
-    password: Yup.string().required("Password is required"),
+  const NewPasswordSchema = Yup.object().shape({
+    newPassword: Yup.string()
+      .required("Password is required")
+      .min(6, "Password must be at least 6 characters"),
+    confirmPassword: Yup.string()
+      .required("CofirmPassword is required")
+      .oneOf([Yup.ref('newPassword'),null],"Password must match"),
   });
   // auth test
   const defaultValues = {
-    email: "vancuong@gmail.com",
-    password: "cuongdeptrai",
+    newPassword: "",
+    confirmPassword: "",
   };
   const methods = useForm({
-    resolver: yupResolver(loginSchema),
+    resolver: yupResolver(NewPasswordSchema),
     defaultValues,
   });
   const {
@@ -53,10 +55,28 @@ const LoginForm = () => {
           <Alert severity="error">{errors.afterSubmit.message}</Alert>
         )}
 
-        <RHFTextField name="email" label="Email Address"></RHFTextField>
+        
         <RHFTextField
-          name="password"
-          label="Password"
+          name="newPassword"
+          label="New Password"
+          type={showPassword ? "text" : "password"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment>
+                <IconButton
+                  onClick={() => {
+                    setShowPassword(!showPassword);
+                  }}
+                >
+                  {showPassword ? <Eye /> : <EyeSlash />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <RHFTextField
+          name="confirmPassword"
+          label="Confirm Password"
           type={showPassword ? "text" : "password"}
           InputProps={{
             endAdornment: (
@@ -74,29 +94,29 @@ const LoginForm = () => {
         />
       </Stack>
       <Stack alignItems={"flex-end"} sx={{ my: 2 }}>
-        
-        <Link component={RouterLink} to="/auth/reset-password" variant="body2" color="inherit" underline="always">
-          Forgot Password?
-        </Link>
-      <Button
-        fullWidth
-        color="inherit"
-        size="large"
-        type="submit"
-        variant="contained"
-        sx={{ bgcolor: "text.primary" ,
-          color: (theme)=> theme.palette.mode==="light" ? "common.white":"grey.800",
-          "&:hover":{
+   
+        <Button
+          fullWidth
+          color="inherit"
+          size="large"
+          type="submit"
+          variant="contained"
+          sx={{
             bgcolor: "text.primary",
-            color: (theme)=>theme.palette.mode==="light"? "common.white":"gray.800"
-          }
-        }}
-      >
-        Login
-      </Button>
+            color: (theme) =>
+              theme.palette.mode === "light" ? "common.white" : "grey.800",
+            "&:hover": {
+              bgcolor: "text.primary",
+              color: (theme) =>
+                theme.palette.mode === "light" ? "common.white" : "gray.800",
+            },
+          }}
+        >
+          submit
+        </Button>
       </Stack>
     </FormProvider>
   );
 };
 
-export default LoginForm;
+export default NewPasswordForm;
