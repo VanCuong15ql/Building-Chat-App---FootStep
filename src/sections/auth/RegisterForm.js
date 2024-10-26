@@ -1,22 +1,18 @@
-import React, { useState } from "react";
-import * as Yup from "yup";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import React from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 import FormProvider, { RHFTextField } from "../../components/hook-form";
-import {
-  Alert,
-  Button,
-  IconButton,
-  InputAdornment,
-  Link,
-  Stack,
-} from "@mui/material";
-import{Link as RouterLink} from "react-router-dom"
+import { Alert, Button, IconButton, InputAdornment, Stack } from "@mui/material";
 import { Eye, EyeSlash } from "phosphor-react";
+import AuthSocial from "./AuthSocial";
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const loginSchema = Yup.object().shape({
+  const RegisterSchema = Yup.object().shape({
+    firstName: Yup.string().required("First name is required"),
+    lastName: Yup.string().required("Last name is required"),
     email: Yup.string()
       .required("Email is required")
       .email("email must be a valid email address"),
@@ -24,11 +20,13 @@ const LoginForm = () => {
   });
   // auth test
   const defaultValues = {
+    firstName: "",
+    lastName: "",
     email: "vancuong@gmail.com",
     password: "cuongdeptrai",
   };
   const methods = useForm({
-    resolver: yupResolver(LoginForm),
+    resolver: yupResolver(RegisterForm),
     defaultValues,
   });
   const {
@@ -52,11 +50,14 @@ const LoginForm = () => {
         {!!errors.afterSubmit && (
           <Alert severity="error">{errors.afterSubmit.message}</Alert>
         )}
-
-        <RHFTextField name="email" label="Email Address"></RHFTextField>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+          <RHFTextField name={"firstName"} label="First Name"></RHFTextField>
+          <RHFTextField name={"lastName"} label="Last Name"></RHFTextField>
+        </Stack>
+        <RHFTextField name={"email"} label="Email"></RHFTextField>
         <RHFTextField
-          name="password"
-          label="Password"
+          name={"password"}
+          label="PassWord"
           type={showPassword ? "text" : "password"}
           InputProps={{
             endAdornment: (
@@ -71,32 +72,30 @@ const LoginForm = () => {
               </InputAdornment>
             ),
           }}
-        />
-      </Stack>
-      <Stack alignItems={"flex-end"} sx={{ my: 2 }}>
-        
-        <Link component={RouterLink} to="/auth/reset-password" variant="body2" color="inherit" underline="always">
-          Forgot Password?
-        </Link>
+        ></RHFTextField>
       <Button
         fullWidth
         color="inherit"
         size="large"
         type="submit"
         variant="contained"
-        sx={{ bgcolor: "text.primary" ,
-          color: (theme)=> theme.palette.mode==="light" ? "common.white":"grey.800",
-          "&:hover":{
+        sx={{
+          bgcolor: "text.primary",
+          color: (theme) =>
+            theme.palette.mode === "light" ? "common.white" : "grey.800",
+          "&:hover": {
             bgcolor: "text.primary",
-            color: (theme)=>theme.palette.mode==="light"? "common.white":"gray.800"
-          }
+            color: (theme) =>
+              theme.palette.mode === "light" ? "common.white" : "gray.800",
+          },
         }}
       >
-        Login
+        Creat Accoun
       </Button>
       </Stack>
+      <AuthSocial></AuthSocial>
     </FormProvider>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

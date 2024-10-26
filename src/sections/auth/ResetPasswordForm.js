@@ -11,24 +11,23 @@ import {
   Link,
   Stack,
 } from "@mui/material";
-import{Link as RouterLink} from "react-router-dom"
 import { Eye, EyeSlash } from "phosphor-react";
 
-const LoginForm = () => {
+const ResetPasswordForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const loginSchema = Yup.object().shape({
+  const ResetPasswordSchema = Yup.object().shape({
     email: Yup.string()
       .required("Email is required")
       .email("email must be a valid email address"),
-    password: Yup.string().required("Password is required"),
+    
   });
   // auth test
   const defaultValues = {
     email: "vancuong@gmail.com",
-    password: "cuongdeptrai",
+    
   };
   const methods = useForm({
-    resolver: yupResolver(LoginForm),
+    resolver: yupResolver(ResetPasswordSchema),
     defaultValues,
   });
   const {
@@ -54,49 +53,29 @@ const LoginForm = () => {
         )}
 
         <RHFTextField name="email" label="Email Address"></RHFTextField>
-        <RHFTextField
-          name="password"
-          label="Password"
-          type={showPassword ? "text" : "password"}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment>
-                <IconButton
-                  onClick={() => {
-                    setShowPassword(!showPassword);
-                  }}
-                >
-                  {showPassword ? <Eye /> : <EyeSlash />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
       </Stack>
-      <Stack alignItems={"flex-end"} sx={{ my: 2 }}>
-        
-        <Link component={RouterLink} to="/auth/reset-password" variant="body2" color="inherit" underline="always">
-          Forgot Password?
-        </Link>
+
       <Button
         fullWidth
         color="inherit"
         size="large"
         type="submit"
         variant="contained"
-        sx={{ bgcolor: "text.primary" ,
-          color: (theme)=> theme.palette.mode==="light" ? "common.white":"grey.800",
-          "&:hover":{
+        sx={{
+          bgcolor: "text.primary",
+          color: (theme) =>
+            theme.palette.mode === "light" ? "common.white" : "grey.800",
+          "&:hover": {
             bgcolor: "text.primary",
-            color: (theme)=>theme.palette.mode==="light"? "common.white":"gray.800"
-          }
+            color: (theme) =>
+              theme.palette.mode === "light" ? "common.white" : "gray.800",
+          },
         }}
       >
-        Login
+        Send Request
       </Button>
-      </Stack>
     </FormProvider>
   );
 };
 
-export default LoginForm;
+export default ResetPasswordForm;
