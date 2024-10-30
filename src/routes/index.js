@@ -1,6 +1,9 @@
 import { Suspense, lazy } from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 
+// Suspense: Display loading.. until component is fully loaded (dynamic loading using lazy) 
+// Lazy function to import components
+
 // layouts
 import DashboardLayout from "../layouts/dashboard";
 import MainLayout from "../layouts/main";
@@ -36,7 +39,7 @@ export default function Router() {
       children: [
         { element: <Navigate to={DEFAULT_PATH} replace />, index: true },
         { path: "app", element: <GeneralApp /> },
-        
+
         { path: "404", element: <Page404 /> },
         { path: "*", element: <Navigate to="/404" replace /> },
       ],
