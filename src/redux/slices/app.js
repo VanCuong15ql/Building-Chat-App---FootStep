@@ -23,3 +23,18 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+
+export function ToggleSidebar() {
+    return async () => {
+        dispatch(slice.actions.toggleSidebar())
+    }
+}
+
+// update sidebar type [CONTACT, STARRED, SHARED]
+export function UpdateSidebarType(type) {
+    return async () => {
+        dispatch(slice.actions.updateSidebarType({
+            type,
+        }))
+    }
+}

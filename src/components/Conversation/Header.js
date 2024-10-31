@@ -4,9 +4,12 @@ import { CaretDown, MagnifyingGlass, Phone, VideoCamera } from "phosphor-react";
 import { useTheme } from "@mui/material/styles";
 import StyledBadge from "../StyledBadge";
 import { faker } from "@faker-js/faker";
+import { ToggleSidebar } from "../../redux/slices/app";
+import { useDispatch } from "react-redux";
 
 const Header = () => {
     const theme = useTheme();
+    const dispatch = useDispatch();
     return (
         <Box p={2} sx={{
             width: "100%",
@@ -15,7 +18,10 @@ const Header = () => {
         }}>
             <Stack alignItems={"center"} direction={"row"} justifyContent={"space-between"}
                 sx={{ width: "100%", height: "100%" }}>
-                <Stack direction={"row"} spacing={2}>
+                <Stack onClick={() => {
+                    // open contact info
+                    dispatch(ToggleSidebar());
+                }} direction={"row"} spacing={2}>
                     <Box>
                         <StyledBadge
                             overlap="circular"
