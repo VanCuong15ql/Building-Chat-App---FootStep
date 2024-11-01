@@ -11,10 +11,12 @@ import {
   Link,
   Stack,
 } from "@mui/material";
-import{Link as RouterLink} from "react-router-dom"
+import { Link as RouterLink } from "react-router-dom"
 import { Eye, EyeSlash } from "phosphor-react";
+import { LoginUser } from "../../redux/slices/auth";
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const loginSchema = Yup.object().shape({
     email: Yup.string()
@@ -40,6 +42,7 @@ const LoginForm = () => {
   const onSubmit = async (data) => {
     try {
       // api submit
+      dispatch(LoginUser(data))
     } catch (error) {
       console.log(error);
       reset();
@@ -74,29 +77,30 @@ const LoginForm = () => {
         />
       </Stack>
       <Stack alignItems={"flex-end"} sx={{ my: 2 }}>
-        
+
         <Link component={RouterLink} to="/auth/reset-password" variant="body2" color="inherit" underline="always">
           Forgot Password?
         </Link>
-      <Button
-        fullWidth
-        color="inherit"
-        size="large"
-        type="submit"
-        variant="contained"
-        sx={{ bgcolor: "text.primary" ,
-          color: (theme)=> theme.palette.mode==="light" ? "common.white":"grey.800",
-          "&:hover":{
+        <Button
+          fullWidth
+          color="inherit"
+          size="large"
+          type="submit"
+          variant="contained"
+          sx={{
             bgcolor: "text.primary",
-            color: (theme)=>theme.palette.mode==="light"? "common.white":"gray.800"
-          }
-        }}
-      >
-        Login
-      </Button>
+            color: (theme) => theme.palette.mode === "light" ? "common.white" : "grey.800",
+            "&:hover": {
+              bgcolor: "text.primary",
+              color: (theme) => theme.palette.mode === "light" ? "common.white" : "gray.800"
+            }
+          }}
+        >
+          Login
+        </Button>
       </Stack>
     </FormProvider>
-  );d
+  ); d
 };
 
 export default LoginForm;

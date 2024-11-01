@@ -30,7 +30,7 @@ export default slice.reducer;
 
 export function LoginUser(formValues) {
     // formValues => {email, password}
-    return async () => {
+    return async (dispatch, getState) => {
         await axios.post("/auth/login", {
             ...formValues
         }, {
@@ -40,8 +40,64 @@ export function LoginUser(formValues) {
             }
         }).then(function (response) {
             console.log(response)
+            dispatch(slice.actions.logIn({
+                isLoading: true,
+                token: response.data.token
+            }))
         }).catch(function (error) {
             console.log(error)
         })
+    }
+}
+
+export function LogoutUser() {
+    return async (dispatch, getState) => {
+        dispatch(slice.actions.SignOut());
+    }
+}
+
+export function ForgotPassword(formValues) {
+    return async (dispatch, getState) => {
+        await axios
+            .post(
+                "/auth/forgot-password",
+                {
+                    ...formValues
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            ).then((response) => {
+                console.log(response)
+            }).catch((error) => {
+                console.log(error)
+            })
+    }
+}
+
+export function NewPassword(formValues) {
+    return async (dispatch, getState) => {
+        await axios
+            .post(
+                "/auth/reset-password",
+                {
+                    ...formValues
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            ).then((response) => {
+                console.log(response)
+                dispatch(slice.actions.logIn({
+                    isLoggedIn: true,
+                    token: response.data.token
+                }))
+            }).catch((error) => {
+                console.log(error)
+            })
     }
 }

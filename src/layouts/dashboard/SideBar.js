@@ -6,8 +6,11 @@ import { Nav_Buttons, Profile_Menu } from "../../data";
 import useSettings from "../../hooks/useSettings";
 import { faker } from "@faker-js/faker";
 import Logo from "../../assets/Images/logo.ico"
+import { useDispatch } from "react-redux";
+import { LogoutUser } from "../../redux/slices/auth";
 
 const SideBar = () => {
+    const dispatch = useDispatch()
     const theme = useTheme();
     const [selected, setSelected] = useState(0);
     const { onToggleMode } = useSettings();
@@ -120,8 +123,20 @@ const SideBar = () => {
                         {/* adding Profile_Menu */}
                         <Stack spacing={1} px={1}>
                             {Profile_Menu.map((el) => (
-                                <MenuItem onClick={handleClick}>
+                                <MenuItem
+                                    onClick={() => {
+                                        handleClick();
+
+                                    }}
+                                >
                                     <Stack
+                                        onClick={() => {
+                                            if (idx === 2) {
+                                                dispatch(LogoutUser());
+                                            } else {
+                                                //navigate(getMenuPath(idx));
+                                            }
+                                        }}
                                         direction="row"
                                         alignItems={"center"}
                                         justifyContent="space-between"
