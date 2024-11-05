@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { Bell, CaretRight, Phone, Prohibit, Star, Trash, VideoCamera, X } from 'phosphor-react';
 import React from 'react'
 import { useDispatch } from 'react-redux';
-import { ToggleSidebar } from '../redux/slices/app';
+import { ToggleSidebar, UpdateSidebarType } from '../redux/slices/app';
 import { faker } from '@faker-js/faker';
 
 const Contact = () => {
@@ -72,7 +72,10 @@ const Contact = () => {
                     {/* Media, links and docs */}
                     <Stack direction="row" alignItems={"center"} justifyContent="space-between">
                         <Typography variant='subtitle2'>Media, links and docs</Typography>
-                        <Button endIcon={<CaretRight />}>
+                        <Button onClick={() => {
+                            // Open SharedMessages
+                            dispatch(UpdateSidebarType("SHARED"))
+                        }} endIcon={<CaretRight />}>
                             401
                             {/* Items count */}
                         </Button>
@@ -92,7 +95,10 @@ const Contact = () => {
                             <Star size={21} />
                             <Typography variant='subtitle2'>Starred Messages</Typography>
                         </Stack>
-                        <IconButton>
+                        <IconButton onClick={() => {
+                            // Open StarMessage
+                            dispatch(UpdateSidebarType("STARRED"))
+                        }}>
                             <CaretRight />
                         </IconButton>
                     </Stack>
