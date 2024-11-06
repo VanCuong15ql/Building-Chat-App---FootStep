@@ -1,14 +1,74 @@
-import { Avatar, Box, Button, Divider, IconButton, Stack, Switch, Typography } from '@mui/material'
+import { Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, Slide, Stack, Switch, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles';
 import { Bell, CaretRight, Phone, Prohibit, Star, Trash, VideoCamera, X } from 'phosphor-react';
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { ToggleSidebar, UpdateSidebarType } from '../redux/slices/app';
 import { faker } from '@faker-js/faker';
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const BlockDialog = ({ open, handleClose }) => {
+    return (
+        <Dialog
+            open={open}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleClose}
+            aria-describedby="alert-dialog-slide-description"
+        >
+            <DialogTitle>{"Block this contact"}</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-slide-description">
+                    Are you sure you want to block this Contact?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>Yes</Button>
+            </DialogActions>
+        </Dialog>
+    )
+}
+
+const DeleteDialog = ({ open, handleClose }) => {
+    return (
+        <Dialog
+            open={open}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleClose}
+            aria-describedby="alert-dialog-slide-description"
+        >
+            <DialogTitle>{"Delete this chat"}</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-slide-description">
+                    Are you sure you want to delete this chat?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>Yes</Button>
+            </DialogActions>
+        </Dialog>
+    )
+}
+
 const Contact = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
+    const [openBlock, setOpenBlock] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+
+    const handleCloseBlock = () => {
+        setOpenBlock(false);
+    }
+
+    const handleCloseDelete = () => {
+        setOpenDelete(false);
+    }
 
     return (
         <Box sx={{ width: 320, height: "100vh" }}>
@@ -123,16 +183,21 @@ const Contact = () => {
                     </Stack>
                     {/* Option */}
                     <Stack direction="row" alignItems="center" spacing={2}>
-                        <Button startIcon={<Prohibit />} fullWidth variant='outlined'>
+                        <Button onClick={() => {
+                            setOpenBlock(true);
+                        }} startIcon={<Prohibit />} fullWidth variant='outlined'>
                             Block
                         </Button>
-                        <Button startIcon={<Trash />} fullWidth variant='outlined'>
+                        <Button onClick={() => {
+                            setOpenDelete(true);
+                        }} startIcon={<Trash />} fullWidth variant='outlined'>
                             Delete
                         </Button>
                     </Stack>
                 </Stack>
+                {openBlock && <BlockDialog open={openBlock} handleClose={handleCloseBlock} />}
+                {openDelete && <DeleteDialog open={openDelete} handleClose={handleCloseDelete} />}
             </Stack>
-
         </Box>
     )
 }
