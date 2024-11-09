@@ -37,7 +37,6 @@ const StartCall = ({ open, handleClose }) => {
                     </Stack>
                     {/* Call list */}
                     {MembersList.map((el) => <CallElement {...el} />)}
-
                 </Stack>
             </DialogContent>
         </Dialog>
