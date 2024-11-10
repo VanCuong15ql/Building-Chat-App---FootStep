@@ -17,6 +17,7 @@ import {
   SearchIconWrapper,
   StyledInputBase,
 } from "../../components/Search";
+import CreateGroup from "../../sections/main/CreateGroup";
 
 
 const Group = () => {
@@ -105,6 +106,7 @@ const Group = () => {
 
         {/* Right */}
       </Stack>
+      {openDialog && <CreateGroup open={openDialog} handleClose={handleCloseDialog} />}
     </>
   );
 };
