@@ -11,23 +11,27 @@ import {
   Link,
   Stack,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import { Eye, EyeSlash } from "phosphor-react";
+import { useDispatch } from "react-redux";
+import { NewPassword } from "../../redux/slices/auth";
 
 const NewPasswordForm = () => {
+  const [queryParameters] = useSearchParams();
+  const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState(false);
   const NewPasswordSchema = Yup.object().shape({
-    newPassword: Yup.string()
+    password: Yup.string()
       .required("Password is required")
       .min(6, "Password must be at least 6 characters"),
-    confirmPassword: Yup.string()
+    passwordConfirm: Yup.string()
       .required("CofirmPassword is required")
-      .oneOf([Yup.ref('newPassword'),null],"Password must match"),
+      .oneOf([Yup.ref('password'), null], "Password must match"),
   });
   // auth test
   const defaultValues = {
-    newPassword: "",
-    confirmPassword: "",
+    password: "",
+    passwordConfirm: "",
   };
   const methods = useForm({
     resolver: yupResolver(NewPasswordSchema),
@@ -41,6 +45,10 @@ const NewPasswordForm = () => {
   } = methods;
   const onSubmit = async (data) => {
     try {
+      dispatch(NewPassword({
+        ...data,
+        token: queryParameters.get("token")
+      }))
       // api submit
     } catch (error) {
       console.log(error);
@@ -55,9 +63,9 @@ const NewPasswordForm = () => {
           <Alert severity="error">{errors.afterSubmit.message}</Alert>
         )}
 
-        
+
         <RHFTextField
-          name="newPassword"
+          name="password"
           label="New Password"
           type={showPassword ? "text" : "password"}
           InputProps={{
@@ -75,7 +83,7 @@ const NewPasswordForm = () => {
           }}
         />
         <RHFTextField
-          name="confirmPassword"
+          name="passwordConfirm"
           label="Confirm Password"
           type={showPassword ? "text" : "password"}
           InputProps={{
@@ -94,7 +102,7 @@ const NewPasswordForm = () => {
         />
       </Stack>
       <Stack alignItems={"flex-end"} sx={{ my: 2 }}>
-   
+
         <Button
           fullWidth
           color="inherit"

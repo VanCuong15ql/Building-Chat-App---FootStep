@@ -7,6 +7,8 @@ import useSettings from "../../hooks/useSettings";
 import { faker } from "@faker-js/faker";
 import Logo from "../../assets/Images/logo.ico";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { LogoutUser } from "../../redux/slices/auth";
 
 const getPath = (index) => {
     switch (index) {
@@ -38,6 +40,7 @@ const getMenuPath = (index) => {
 }
 
 const SideBar = () => {
+    const dispatch = useDispatch()
     const theme = useTheme();
     const navigate = useNavigate();
     const [selected, setSelected] = useState(0);
@@ -158,7 +161,11 @@ const SideBar = () => {
                                     <Stack
                                         onClick={(e) => {
                                             e.stopPropagation(); // stop menu popup
-                                            navigate(getMenuPath(idx));
+                                            if (idx === 2) {
+                                                dispatch(LogoutUser())
+                                            } else {
+                                                navigate(getMenuPath(idx));
+                                            }
                                         }}
                                         direction="row"
                                         alignItems={"center"}
