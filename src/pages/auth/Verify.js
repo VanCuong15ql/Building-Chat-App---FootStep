@@ -1,5 +1,6 @@
 
 import { Stack, Typography } from "@mui/material";
+import VerifyForm from "../../sections/auth/VerifyForm";
 
 // ----------------------------------------------------------------------
 
@@ -7,14 +8,16 @@ const Verify = () => {
     return (
         <>
             <Stack spacing={2} sx={{ mb: 5, position: "relative" }}>
-                <Typography>Please Verify OTP</Typography>
+                <Typography variant="h4">Please Verify OTP</Typography>
 
-                <Stack>
-                    <Typography>
+                <Stack direction={"row"} spacing={0.5}>
+                    <Typography variant="body2">
                         Sent to email (vancuong@gmail.com)
                     </Typography>
                 </Stack>
             </Stack>
+            {/* Verify Form*/}
+            <VerifyForm />
         </>
     );
 }

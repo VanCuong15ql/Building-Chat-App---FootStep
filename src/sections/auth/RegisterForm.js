@@ -7,8 +7,11 @@ import FormProvider, { RHFTextField } from "../../components/hook-form";
 import { Alert, Button, IconButton, InputAdornment, Stack } from "@mui/material";
 import { Eye, EyeSlash } from "phosphor-react";
 import AuthSocial from "./AuthSocial";
+import { RegisterUser } from "../../redux/slices/auth";
+import { useDispatch } from "react-redux";
 
 const RegisterForm = () => {
+  const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState(false);
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required("First name is required"),
@@ -26,7 +29,7 @@ const RegisterForm = () => {
     password: "cuongdeptrai",
   };
   const methods = useForm({
-    resolver: yupResolver(RegisterForm),
+    resolver: yupResolver(RegisterSchema),
     defaultValues,
   });
   const {
@@ -38,6 +41,7 @@ const RegisterForm = () => {
   const onSubmit = async (data) => {
     try {
       // api submit
+      dispatch(RegisterUser(data))
     } catch (error) {
       console.log(error);
       reset();
@@ -73,25 +77,25 @@ const RegisterForm = () => {
             ),
           }}
         ></RHFTextField>
-      <Button
-        fullWidth
-        color="inherit"
-        size="large"
-        type="submit"
-        variant="contained"
-        sx={{
-          bgcolor: "text.primary",
-          color: (theme) =>
-            theme.palette.mode === "light" ? "common.white" : "grey.800",
-          "&:hover": {
+        <Button
+          fullWidth
+          color="inherit"
+          size="large"
+          type="submit"
+          variant="contained"
+          sx={{
             bgcolor: "text.primary",
             color: (theme) =>
-              theme.palette.mode === "light" ? "common.white" : "gray.800",
-          },
-        }}
-      >
-        Creat Accoun
-      </Button>
+              theme.palette.mode === "light" ? "common.white" : "grey.800",
+            "&:hover": {
+              bgcolor: "text.primary",
+              color: (theme) =>
+                theme.palette.mode === "light" ? "common.white" : "gray.800",
+            },
+          }}
+        >
+          Creat Accoun
+        </Button>
       </Stack>
       <AuthSocial></AuthSocial>
     </FormProvider>
