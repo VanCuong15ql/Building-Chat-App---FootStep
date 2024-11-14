@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography, InputBase, Button, Divider, Avatar, Badge } from "@mui/material";
 import { ArchiveBox, CircleDashed, MagnifyingGlass, Users } from "phosphor-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled, alpha, useTheme } from "@mui/material/styles";
 import { faker } from "@faker-js/faker";
 import { ChatList } from "../../data";
@@ -10,13 +10,24 @@ import SearchIconWrapper from "../../components/Search/SearchIconWrapper";
 import StyledInputBase from "../../components/Search/StyledInputBase";
 import ChatElement from "../../components/ChatElement";
 import Friends from "../../sections/main/Friends";
+import { socket } from "../../socket";
+import { useSelector } from "react-redux";
 
 
 // container for all in search
+const user_id = window.localStorage.getItem("user_id")
 
 const Chats = () => {
     const [openDialog, setOpenDialog] = useState(false)
     const theme = useTheme();
+
+    const { conversations } = useSelector((state) => state.conversation.direct_chat)
+
+    useEffect(() => {
+        socket.emit("get_direct_conversations", { user_id }, (data) => {
+
+        })
+    }, [])
 
     const handleOpenDialog = () => {
         setOpenDialog(true)
@@ -71,15 +82,15 @@ const Chats = () => {
                         sx={{ flexGrow: 1, overflowY: "scroll", height: "100%" }}>
                         {/* nice scroll is out of date */}
                         <SimpleBarStyle timeout={500} clickOnTrack={false}>
-                            <Stack spacing={2.4}>
+                            {/* <Stack spacing={2.4}>
                                 <Typography variant="subtitle2" sx={{ color: "#676767" }}>Pinned</Typography>
                                 {ChatList.filter((el) => el.pinned).map((el) => {
                                     return <ChatElement {...el} />
                                 })}
-                            </Stack>
+                            </Stack> */}
                             <Stack spacing={2.4}>
                                 <Typography variant="subtitle2" sx={{ color: "#676767" }}>All Chats</Typography>
-                                {ChatList.filter((el) => !el.pinned).map((el) => {
+                                {conversations.filter((el) => !el.pinned).map((el) => {
                                     return <ChatElement {...el} />
                                 })}
                             </Stack>
