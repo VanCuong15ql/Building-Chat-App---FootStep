@@ -1,7 +1,7 @@
 import React from "react";
 import Chats from "./Chats";
 import { Box, Stack, Typography } from "@mui/material";
-import Conversation from "../../components/Conversation";
+import ChatComponent from "./Conversation";
 import { useTheme } from "@mui/material/styles";
 import Contact from "../../components/Contact";
 import { useSelector } from "react-redux";
@@ -27,7 +27,7 @@ const GeneralApp = () => {
           ? "#F0F4FA"
           : theme.palette.background.default
       }}>
-        {room_id !== null && chat_type === "individual" ? <Conversation /> :
+        {room_id !== null && chat_type === "individual" ? <ChatComponent /> :
           (
             <Stack
               spacing={2}

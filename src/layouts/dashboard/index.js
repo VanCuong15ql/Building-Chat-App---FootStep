@@ -5,7 +5,7 @@ import SideBar from "./SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { connectSocket, socket } from "../../socket";
 import { SelectConversation, showSnackbar } from "../../redux/slices/app";
-import { AddDirectConversation, UpdateDirectConversation } from "../../redux/slices/conversation";
+import { AddDirectConversation, UpdateDirectConversation, AddDirectMessage } from "../../redux/slices/conversation";
 
 // fix logined - make it dynamic
 
@@ -13,7 +13,7 @@ const DashboardLayout = () => {
   const dispatch = useDispatch();
 
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { conversations } = useSelector((state) => state.conversation.direct_chat)
+  const { conversations, current_conversation } = useSelector((state) => state.conversation.direct_chat)
 
   const user_id = window.localStorage.getItem("user_id");
 
@@ -32,6 +32,24 @@ const DashboardLayout = () => {
         connectSocket(user_id);
       }
 
+      socket.on("new_message", (data) => {
+        const message = data.message;
+        console.log(current_conversation, data);
+        // check if msg we got is from currently selected conversation
+        if (current_conversation && current_conversation.id === data.conversation_id) {
+          dispatch(
+            AddDirectMessage({
+              id: message.created_at,
+              type: "msg",
+              subtype: message.type,
+              message: message.text,
+              incoming: message.to === user_id,
+              outgoing: message.from === user_id,
+            })
+          );
+        }
+      })
+
       // new_friend_requests
 
       socket.on("new_friend_request", (data) => {
@@ -47,6 +65,7 @@ const DashboardLayout = () => {
       })
 
       socket.on("start_chat", (data) => {
+        console.log(data)
         const existing_conversation = conversations.find((el) => el.id === data._id)
         if (existing_conversation) {
           dispatch(UpdateDirectConversation({ conversation: data }))
@@ -61,7 +80,8 @@ const DashboardLayout = () => {
       socket?.off("new_friend_request");
       socket?.off("request_accepted");
       socket?.off("request_sent");
-      socket?.off("start_chat")
+      socket?.off("start_chat");
+      socket?.off("new_message");
     }
   }, [isLoggedIn, socket])
 
