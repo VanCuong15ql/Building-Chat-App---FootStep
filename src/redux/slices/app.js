@@ -12,6 +12,7 @@ const initialState = {
         severity: null,
     },
     users: [],
+    all_users: [],
     friends: [],
     friendRequests: [],
     chat_type: null,
@@ -45,6 +46,10 @@ const slice = createSlice({
         updateUsers(state, action) {
             state.users = action.payload.users
         },
+        updateAllUsers(state, action) {
+            state.all_users = action.payload.users;
+        },
+
         updateFriends(state, action) {
             state.friends = action.payload.friends
         },
@@ -101,6 +106,28 @@ export const FetchUsers = () => {
             .then((response) => {
                 console.log(response);
                 dispatch(slice.actions.updateUsers({ users: response.data.data }));
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+}
+
+export function FetchAllUsers() {
+    return async (dispatch, getState) => {
+        await axios
+            .get(
+                "/user/get-all-verified-users",
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${getState().auth.token}`,
+                    },
+                }
+            )
+            .then((response) => {
+                console.log(response);
+                dispatch(slice.actions.updateAllUsers({ users: response.data.data }));
             })
             .catch((err) => {
                 console.log(err);

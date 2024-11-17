@@ -6,14 +6,36 @@ import { useDispatch, useSelector } from "react-redux";
 import { connectSocket, socket } from "../../socket";
 import { SelectConversation, showSnackbar } from "../../redux/slices/app";
 import { AddDirectConversation, UpdateDirectConversation, AddDirectMessage } from "../../redux/slices/conversation";
+import AudioCallNotification from "../../sections/dashboard/Audio/CallNotification";
+import VideoCallNotification from "../../sections/dashboard/video/CallNotification";
+import {
+  PushToAudioCallQueue,
+  UpdateAudioCallDialog,
+} from "../../redux/slices/audioCall";
+import AudioCallDialog from "../../sections/dashboard/Audio/CallDialog";
+import VideoCallDialog from "../../sections/dashboard/video/CallDialog"
+import { PushToVideoCallQueue, UpdateVideoCallDialog } from "../../redux/slices/videoCall";
 
 // fix logined - make it dynamic
 
 const DashboardLayout = () => {
   const dispatch = useDispatch();
+  const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
+    (state) => state.audioCall
+  );
+  const { open_video_notification_dialog, open_video_dialog } = useSelector(
+    (state) => state.videoCall
+  );
 
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { conversations, current_conversation } = useSelector((state) => state.conversation.direct_chat)
+
+  const handleCloseAudioDialog = () => {
+    dispatch(UpdateAudioCallDialog({ state: false }));
+  };
+  const handleCloseVideoDialog = () => {
+    dispatch(UpdateVideoCallDialog({ state: false }));
+  };
 
   const user_id = window.localStorage.getItem("user_id");
 
@@ -32,6 +54,17 @@ const DashboardLayout = () => {
         connectSocket(user_id);
       }
 
+      socket.on("audio_call_notification", (data) => {
+        // TODO => dispatch an action to add this in call_queue
+        dispatch(PushToAudioCallQueue(data));
+
+      });
+
+      socket.on("video_call_notification", (data) => {
+        // TODO => dispatch an action to add this in call_queue
+        dispatch(PushToVideoCallQueue(data));
+      });
+
       socket.on("new_message", (data) => {
         const message = data.message;
         console.log(current_conversation, data);
@@ -47,6 +80,8 @@ const DashboardLayout = () => {
               outgoing: message.from === user_id,
             })
           );
+
+
         }
       })
 
@@ -82,6 +117,7 @@ const DashboardLayout = () => {
       socket?.off("request_sent");
       socket?.off("start_chat");
       socket?.off("new_message");
+      socket?.off("audio_call_notification");
     }
   }, [isLoggedIn, socket])
 
@@ -91,12 +127,32 @@ const DashboardLayout = () => {
   }
 
   return (
-    <Stack direction="row">
-      {/* Side bar */}
-      <SideBar />
-      <Outlet />
-      {/* Chats and conservation render here */}
-    </Stack>
+    <>
+      <Stack direction="row">
+        {/* Side bar */}
+        <SideBar />
+        <Outlet />
+        {/* Chats and conservation render here */}
+      </Stack>
+      {open_audio_notification_dialog && (
+        <AudioCallNotification open={open_audio_notification_dialog} />
+      )}
+      {open_audio_dialog && (
+        <AudioCallDialog
+          open={open_audio_dialog}
+          handleClose={handleCloseAudioDialog}
+        />
+      )}
+      {open_video_notification_dialog && (
+        <VideoCallNotification open={open_video_notification_dialog} />
+      )}
+      {open_video_dialog && (
+        <VideoCallDialog
+          open={open_video_dialog}
+          handleClose={handleCloseVideoDialog}
+        />
+      )}
+    </>
   );
 };
 
