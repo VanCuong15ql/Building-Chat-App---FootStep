@@ -2,15 +2,17 @@ import React from "react";
 import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import { faker } from "@faker-js/faker";
+import { useDispatch } from "react-redux";
+import { SelectConversation } from "../redux/slices/app";
 
 const truncateText = (string, n) => {
-  return string?.length > n ? `${string?.slice(0, n)}...` : string;
+    return string?.length > n ? `${string?.slice(0, n)}...` : string;
 };
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
-  "&:hover": {
-    cursor: "pointer",
-  },
+    "&:hover": {
+        cursor: "pointer",
+    },
 }));
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -44,12 +46,18 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
     const theme = useTheme();
+    const dispatch = useDispatch()
+
     return (
-        <Box sx={{
-            width: "100%",
-            borderRadius: 1,
-            backgroundColor: theme.palette.mode === "light" ? "#fff" : theme.palette.background.default,
-        }} p={2}>
+        <Box
+            onClick={() => {
+                dispatch(SelectConversation({ room_id: id }))
+            }}
+            sx={{
+                width: "100%",
+                borderRadius: 1,
+                backgroundColor: theme.palette.mode === "light" ? "#fff" : theme.palette.background.default,
+            }} p={2}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Stack direction="row" spacing={2}>
                     {online ? <StyledBadge

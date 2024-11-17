@@ -12,19 +12,22 @@ import {
   Stack,
 } from "@mui/material";
 import { Eye, EyeSlash } from "phosphor-react";
+import { ForgotPassword } from "../../redux/slices/auth";
+import { useDispatch } from "react-redux";
 
 const ResetPasswordForm = () => {
+  const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState(false);
   const ResetPasswordSchema = Yup.object().shape({
     email: Yup.string()
       .required("Email is required")
       .email("email must be a valid email address"),
-    
+
   });
   // auth test
   const defaultValues = {
     email: "vancuong@gmail.com",
-    
+
   };
   const methods = useForm({
     resolver: yupResolver(ResetPasswordSchema),
@@ -39,6 +42,7 @@ const ResetPasswordForm = () => {
   const onSubmit = async (data) => {
     try {
       // api submit
+      dispatch(ForgotPassword(data))
     } catch (error) {
       console.log(error);
       reset();
