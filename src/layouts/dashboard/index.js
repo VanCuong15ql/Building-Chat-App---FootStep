@@ -9,12 +9,13 @@ import { AddDirectConversation, UpdateDirectConversation, AddDirectMessage } fro
 import AudioCallNotification from "../../sections/dashboard/Audio/CallNotification";
 import VideoCallNotification from "../../sections/dashboard/video/CallNotification";
 import {
+  CloseAudioNotificationDialog,
   PushToAudioCallQueue,
   UpdateAudioCallDialog,
 } from "../../redux/slices/audioCall";
 import AudioCallDialog from "../../sections/dashboard/Audio/CallDialog";
 import VideoCallDialog from "../../sections/dashboard/video/CallDialog"
-import { PushToVideoCallQueue, UpdateVideoCallDialog } from "../../redux/slices/videoCall";
+import { CloseVideoNotificationDialog, PushToVideoCallQueue, UpdateVideoCallDialog } from "../../redux/slices/videoCall";
 
 // fix logined - make it dynamic
 
@@ -33,9 +34,18 @@ const DashboardLayout = () => {
   const handleCloseAudioDialog = () => {
     dispatch(UpdateAudioCallDialog({ state: false }));
   };
+
   const handleCloseVideoDialog = () => {
     dispatch(UpdateVideoCallDialog({ state: false }));
   };
+
+  const handleCloseAudioNotification = () => {
+    dispatch(CloseAudioNotificationDialog())
+  }
+
+  const handleCloseVideoNotification = () => {
+    dispatch(CloseVideoNotificationDialog())
+  }
 
   const user_id = window.localStorage.getItem("user_id");
 
@@ -135,7 +145,10 @@ const DashboardLayout = () => {
         {/* Chats and conservation render here */}
       </Stack>
       {open_audio_notification_dialog && (
-        <AudioCallNotification open={open_audio_notification_dialog} />
+        <AudioCallNotification
+          open={open_audio_notification_dialog}
+          handleClose={handleCloseAudioNotification}
+        />
       )}
       {open_audio_dialog && (
         <AudioCallDialog
@@ -144,7 +157,10 @@ const DashboardLayout = () => {
         />
       )}
       {open_video_notification_dialog && (
-        <VideoCallNotification open={open_video_notification_dialog} />
+        <VideoCallNotification
+          open={open_video_notification_dialog}
+          handleClose={handleCloseVideoNotification}
+        />
       )}
       {open_video_dialog && (
         <VideoCallDialog
