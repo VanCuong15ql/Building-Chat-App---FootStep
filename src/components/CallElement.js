@@ -14,15 +14,14 @@ import {
     VideoCamera,
     Phone,
 } from "phosphor-react";
+import { useDispatch } from "react-redux";
+import { StartAudioCall } from "../redux/slices/audioCall";
+import { StartVideoCall } from "../redux/slices/videoCall";
 const StyledChatBox = styled(Box)(({ theme }) => ({
     "&:hover": {
         cursor: "pointer",
     },
 }));
-import { useDispatch } from "react-redux";
-import { StartAudioCall } from "../redux/slices/audioCall";
-import { StartVideoCall } from "../redux/slices/videoCall";
-
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     "& .MuiBadge-badge": {
