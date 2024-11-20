@@ -15,9 +15,11 @@ import { useEffect } from "react";
 import axiosInstance from "../../../utils/axios";
 import { ResetAudioCallQueue } from "../../../redux/slices/audioCall";
 import { socket } from "../../../socket";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+
 const CallDialog = ({ open, handleClose }) => {
 
     const dispatch = useDispatch();
@@ -66,6 +68,7 @@ const CallDialog = ({ open, handleClose }) => {
             handleClose();
         }
     };
+
     useEffect(() => {
         // TODO => emit audio_call event
         // create a job to decline call automatically after 30 sec if not picked
@@ -91,8 +94,8 @@ const CallDialog = ({ open, handleClose }) => {
         });
         if (!incoming) {
             socket.emit("start_audio_call", {
-                from: userID,
                 to: streamID,
+                from: userID,
                 roomID,
             });
         }
@@ -125,6 +128,7 @@ const CallDialog = ({ open, handleClose }) => {
             // ...
         }
         fetchToken();
+
         // Step 2 => Check browser compatibility
         zg.checkSystemRequirements()
             .then((result) => {
@@ -192,14 +196,16 @@ const CallDialog = ({ open, handleClose }) => {
                             // * Can be used to show connected status for a user (especially useful in a group call)
                         }
                     });
+
                     // Callback for updates on the status of ther users in the room.
                     zg.on("roomUserUpdate", async (roomID, updateType, userList) => {
                         console.warn(
-                            `roomUserUpdate: room ${roomID}, user ${updateType === "ADD" ? "added" : "left"
+                            `roomUserUpdate: room ${roomID}, 
+                            user ${updateType === "ADD" ? "added" : "left"
                             } `,
                             JSON.stringify(userList)
                         );
-                        if (updateType === "left") {
+                        if (updateType !== "ADD") {
                             handleDisconnect();
                         } else {
                             // const current_users = JSON.stringify(userList);

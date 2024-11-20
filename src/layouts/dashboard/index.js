@@ -67,11 +67,11 @@ const DashboardLayout = () => {
       socket.on("audio_call_notification", (data) => {
         // TODO => dispatch an action to add this in call_queue
         dispatch(PushToAudioCallQueue(data));
-
       });
 
       socket.on("video_call_notification", (data) => {
         // TODO => dispatch an action to add this in call_queue
+        // alert("got notification for video call")
         dispatch(PushToVideoCallQueue(data));
       });
 
@@ -90,19 +90,25 @@ const DashboardLayout = () => {
               outgoing: message.from === user_id,
             })
           );
-
-
         }
       })
 
       // new_friend_requests
 
       socket.on("new_friend_request", (data) => {
-        dispatch(showSnackbar({ severity: "success", message: data.message }))
+        dispatch(
+          showSnackbar({
+            severity: "success",
+            message: "New friend request received",
+          }))
       })
 
       socket.on("request_accepted", (data) => {
-        dispatch(showSnackbar({ severity: "success", message: data.message }))
+        dispatch(
+          showSnackbar({
+            severity: "success",
+            message: "Friend Request Accepted",
+          }))
       })
 
       socket.on("request_sent", (data) => {
@@ -111,14 +117,16 @@ const DashboardLayout = () => {
 
       socket.on("start_chat", (data) => {
         console.log(data)
-        const existing_conversation = conversations.find((el) => el.id === data._id)
+        const existing_conversation = conversations.find(
+          (el) => el.id === data._id
+        );
         if (existing_conversation) {
           dispatch(UpdateDirectConversation({ conversation: data }))
         } else {
           dispatch(AddDirectConversation({ conversation: data }))
         }
         dispatch(SelectConversation({ room_id: data._id }))
-      })
+      });
     }
 
     return () => {
@@ -129,7 +137,7 @@ const DashboardLayout = () => {
       socket?.off("new_message");
       socket?.off("audio_call_notification");
     }
-  }, [isLoggedIn, socket])
+  }, [isLoggedIn, socket]);
 
   if (!isLoggedIn) {
     // navigate all path to login if not authenticated

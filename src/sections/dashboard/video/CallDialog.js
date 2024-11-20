@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import {
-    Avatar,
+    // Avatar,
     Button,
     Dialog,
     DialogActions,
@@ -8,7 +8,7 @@ import {
     Slide,
     Stack,
 } from "@mui/material";
-import { faker } from "@faker-js/faker";
+// import { faker } from "@faker-js/faker";
 import { ZegoExpressEngine } from "zego-express-engine-webrtc";
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "../../../utils/axios";
@@ -19,6 +19,7 @@ import { ResetVideoCallQueue } from "../../../redux/slices/videoCall";
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+
 const CallDialog = ({ open, handleClose }) => {
     const dispatch = useDispatch();
 
@@ -46,6 +47,7 @@ const CallDialog = ({ open, handleClose }) => {
     const zg = new ZegoExpressEngine(appID, server);
     const audioStreamID = `audio_${call_details?.streamID}`;
     const videoStreamID = `video_${call_details?.streamID}`;
+
     const handleDisconnect = (event, reason) => {
         if (reason && reason === "backdropClick") {
             return;
@@ -74,6 +76,7 @@ const CallDialog = ({ open, handleClose }) => {
             handleClose();
         }
     };
+
     useEffect(() => {
         // TODO => emit video_call event
         // create a job to decline call automatically after 30 sec if not picked
@@ -87,16 +90,19 @@ const CallDialog = ({ open, handleClose }) => {
                 }
             );
         }, 30 * 1000);
+
         socket.on("video_call_missed", () => {
             // TODO => You can play an audio indicating call is missed at receiver's end
             // Abort call
             handleDisconnect();
         });
+
         socket.on("video_call_accepted", () => {
             // TODO => You can play an audio indicating call is started
             // clear timeout for "video_call_not_picked"
             clearTimeout(timer);
         });
+
         if (!incoming) {
             socket.emit("start_video_call", {
                 to: call_details?.streamID,
@@ -104,6 +110,7 @@ const CallDialog = ({ open, handleClose }) => {
                 roomID,
             });
         }
+
         socket.on("video_call_denied", () => {
             // TODO => You can play an audio indicating call is denined
             // ABORT CALL
@@ -132,6 +139,7 @@ const CallDialog = ({ open, handleClose }) => {
             // ...
         }
         fetchToken();
+
         // Step 2 => Check browser compatibility
         zg.checkSystemRequirements()
             .then((result) => {
@@ -193,6 +201,7 @@ const CallDialog = ({ open, handleClose }) => {
                         .catch((error) => {
                             console.log(error);
                         });
+
                     // Callback for updates on the current user's room connection status.
                     zg.on("roomStateUpdate", (roomID, state, errorCode, extendedData) => {
                         if (state === "DISCONNECTED") {
@@ -211,7 +220,8 @@ const CallDialog = ({ open, handleClose }) => {
                     // Callback for updates on the status of ther users in the room.
                     zg.on("roomUserUpdate", async (roomID, updateType, userList) => {
                         console.warn(
-                            `roomUserUpdate: room ${roomID}, user ${updateType === "ADD" ? "added" : "left"
+                            `roomUserUpdate: room ${roomID}, 
+                            user ${updateType === "ADD" ? "added" : "left"
                             } `,
                             JSON.stringify(userList)
                         );
@@ -236,6 +246,7 @@ const CallDialog = ({ open, handleClose }) => {
                             remoteVideo.play();
                         }
                     });
+
                     // Callback for updates on the status of the streams in the room.
                     zg.on(
                         "roomStreamUpdate",
@@ -263,11 +274,13 @@ const CallDialog = ({ open, handleClose }) => {
                             }
                         }
                     );
+
                     zg.on("playerStateUpdate", (result) => {
                         // Callback for updates on stream playing status.
                         // ...
                         // * Can be used to display realtime status of a remote audio stream (Connecting, connected & Disconnected)
                     });
+
                     zg.on("playQualityUpdate", (streamID, stats) => {
                         // Callback for reporting stream playing quality.
                         // * Can be used to display realtime quality of a remote audio stream
