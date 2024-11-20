@@ -8,6 +8,7 @@ const initialState = {
     call_queue: [], // can have max 1 call at any point of time
     incoming: false,
 };
+
 const slice = createSlice({
     name: "videoCall",
     initialState,
@@ -77,22 +78,24 @@ export const StartVideoCall = (id) => {
     };
 };
 
-
 export const PushToVideoCallQueue = (call) => {
     return async (dispatch, getState) => {
         dispatch(slice.actions.pushToVideoCallQueue({ call, incoming: true }));
     };
 };
+
 export const ResetVideoCallQueue = () => {
     return async (dispatch, getState) => {
         dispatch(slice.actions.resetVideoCallQueue());
     };
 };
+
 export const CloseVideoNotificationDialog = () => {
     return async (dispatch, getState) => {
         dispatch(slice.actions.closeNotificationDialog());
     };
 };
+
 export const UpdateVideoCallDialog = ({ state }) => {
     return async (dispatch, getState) => {
         dispatch(slice.actions.updateCallDialog({ state }));

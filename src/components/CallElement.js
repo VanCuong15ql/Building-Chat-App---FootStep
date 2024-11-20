@@ -17,6 +17,7 @@ import {
 import { useDispatch } from "react-redux";
 import { StartAudioCall } from "../redux/slices/audioCall";
 import { StartVideoCall } from "../redux/slices/videoCall";
+
 const StyledChatBox = styled(Box)(({ theme }) => ({
     "&:hover": {
         cursor: "pointer",
@@ -51,6 +52,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
         },
     },
 }));
+
 const CallLogElement = ({ img, name, incoming, missed, online, id }) => {
     const theme = useTheme();
     return (
@@ -100,6 +102,7 @@ const CallLogElement = ({ img, name, incoming, missed, online, id }) => {
         </StyledChatBox>
     );
 };
+
 const CallElement = ({ img, name, id, handleClose }) => {
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -146,4 +149,5 @@ const CallElement = ({ img, name, id, handleClose }) => {
         </StyledChatBox>
     );
 };
+
 export { CallLogElement, CallElement };

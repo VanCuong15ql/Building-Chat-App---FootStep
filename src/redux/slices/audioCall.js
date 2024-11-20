@@ -8,6 +8,7 @@ const initialState = {
     call_queue: [], // can have max 1 call at any point of time
     incoming: false,
 };
+
 const slice = createSlice({
     name: "audioCall",
     initialState,
@@ -82,16 +83,19 @@ export const PushToAudioCallQueue = (call) => {
         dispatch(slice.actions.pushToAudioCallQueue({ call, incoming: true }));
     };
 };
+
 export const ResetAudioCallQueue = () => {
     return async (dispatch, getState) => {
         dispatch(slice.actions.resetAudioCallQueue());
     };
 };
+
 export const CloseAudioNotificationDialog = () => {
     return async (dispatch, getState) => {
         dispatch(slice.actions.closeNotificationDialog());
     };
 };
+
 export const UpdateAudioCallDialog = ({ state }) => {
     return async (dispatch, getState) => {
         dispatch(slice.actions.updateCallDialog({ state }));

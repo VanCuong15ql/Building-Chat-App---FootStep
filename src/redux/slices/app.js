@@ -6,15 +6,17 @@ const initialState = {
         open: false,
         type: "CONTACT", // can be CONTACT, STARRED, SHARED
     },
+    isLoggedIn: true,
+    tab: 0, // [0, 1, 2, 3]
     snackbar: {
         open: null,
         message: null,
         severity: null,
     },
-    users: [],
+    users: [], // all users of app who are not friends and not requested yet
     all_users: [],
-    friends: [],
-    friendRequests: [],
+    friends: [], // all friends
+    friendRequests: [], // all friend requests
     chat_type: null,
     room_id: null,
 };
@@ -24,37 +26,38 @@ const slice = createSlice({
     initialState,
     reducers: {
         // Toggle Sidebar
-        toggleSidebar(state, action) {
+        toggleSidebar(state/*, action*/) {
             state.sidebar.open = !state.sidebar.open;
         },
         updateSidebarType(state, action) {
             state.sidebar.type = action.payload.type;
         },
+        updateTab(state, action) {
+            state.tab = action.payload.tab;
+        },
         openSnackbar(state, action) {
+            // console.log(action.payload);
             state.snackbar.open = true;
-
             state.snackbar.severity = action.payload.severity;
             state.snackbar.message = action.payload.message;
         },
-        closeSnackbar(state, action) {
+        closeSnackbar(state/*, action*/) {
+            // console.log("This is getting executed");
             state.snackbar.open = false;
-
-            state.snackbar.severity = null;
+            // state.snackbar.severity = null;
             state.snackbar.message = null;
         },
-
         updateUsers(state, action) {
             state.users = action.payload.users
         },
         updateAllUsers(state, action) {
             state.all_users = action.payload.users;
         },
-
         updateFriends(state, action) {
-            state.friends = action.payload.friends
+            state.friends = action.payload.friends;
         },
         updateFriendRequests(state, action) {
-            state.friendRequests = action.payload.request
+            state.friendRequests = action.payload.request;
         },
         selectConversation(state, action) {
             state.chat_type = "individual";
@@ -63,7 +66,25 @@ const slice = createSlice({
     },
 });
 
+// Reducer
 export default slice.reducer;
+
+export const closeSnackbar = () => async (dispatch, getState) => {
+    dispatch(slice.actions.closeSnackbar());
+};
+
+export function showSnackbar({ severity /*= "info"*/, message/* = "test" */ }) {
+    return async (dispatch, getState) => {
+        dispatch(slice.actions.openSnackbar({
+            message,
+            severity
+        }));
+
+        setTimeout(() => {
+            dispatch(slice.actions.closeSnackbar());
+        }, 4000);
+    }
+}
 
 export function ToggleSidebar() {
     return async (dispatch, getState) => {
@@ -77,24 +98,13 @@ export function UpdateSidebarType(type) {
     };
 }
 
-export function showSnackbar({ severity = "info", message = "test" }) {
+export function UpdateTab(tab) {
     return async (dispatch, getState) => {
-        dispatch(slice.actions.openSnackbar({
-            message,
-            severity
-        }))
-
-        setTimeout(() => {
-            dispatch(slice.actions.closeSnackbar());
-        }, 4000)
-    }
+        dispatch(slice.actions.updateTab({ tab }));
+    };
 }
 
-export const closeSnackbar = () => async (dispatch, getState) => {
-    dispatch(slice.actions.closeSnackbar());
-};
-
-export const FetchUsers = () => {
+export function FetchUsers() {
     return async (dispatch, getState) => {
         await axios.get("/user/get-users", {
             headers: {
@@ -135,7 +145,7 @@ export function FetchAllUsers() {
     };
 }
 
-export const FetchFriends = () => {
+export function FetchFriends() {
     return async (dispatch, getState) => {
         await axios.get("/user/get-friends", {
             headers: {
@@ -153,7 +163,8 @@ export const FetchFriends = () => {
             });
     };
 }
-export const FetchFriendRequests = () => {
+
+export function FetchFriendRequests() {
     return async (dispatch, getState) => {
         await axios.get("/user/get-requests", {
             headers: {
@@ -165,7 +176,7 @@ export const FetchFriendRequests = () => {
             .then((response) => {
                 console.log(response);
                 dispatch(
-                    slice.actions.updateFriendRequests({ request: response.data.data })
+                    slice.actions.updateFriendRequests({ requests: response.data.data })
                 );
             })
             .catch((err) => {

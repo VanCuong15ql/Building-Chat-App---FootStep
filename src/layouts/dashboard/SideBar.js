@@ -1,14 +1,15 @@
 import React, { useState } from "react"
-import { Box, Divider, IconButton, Stack, Avatar, Switch, Menu, MenuItem } from "@mui/material";
+import { Box, Divider, IconButton, Stack, Avatar, Switch, Menu, MenuItem, Fade } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Gear } from "phosphor-react";
-import { Nav_Buttons, Profile_Menu } from "../../data";
+import { Nav_Buttons, Profile_Menu, Nav_Setting } from "../../data";
 import useSettings from "../../hooks/useSettings";
 import { faker } from "@faker-js/faker";
 import Logo from "../../assets/Images/logo.ico";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { LogoutUser } from "../../redux/slices/auth";
+import { socket } from "../../socket";
 
 const getPath = (index) => {
     switch (index) {
@@ -40,9 +41,10 @@ const getMenuPath = (index) => {
 }
 
 const SideBar = () => {
-    const dispatch = useDispatch()
-    const theme = useTheme();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const theme = useTheme();
+
     const [selected, setSelected] = useState(0);
     const { onToggleMode } = useSettings();
 
@@ -55,6 +57,8 @@ const SideBar = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const user_id = window.localStorage.getItem("user_id");
 
     return (
         <Box p={2}
@@ -74,7 +78,7 @@ const SideBar = () => {
                     }}>
                         <img src={Logo} alt="Chat app logo"></img>
                     </Box>
-
+                    {/* Window options */}
                     <Stack sx={{ width: "max-content" }} direction="column"
                         alignItems="center" spacing={3}>
                         {Nav_Buttons.map((el) => (
@@ -123,27 +127,32 @@ const SideBar = () => {
                         }
                     </Stack>
                 </Stack>
+                {/* Switch and User */}
                 <Stack spacing={4} alignItems="center">
                     {/* Switch */}
                     <Switch onChange={() => {
                         onToggleMode();
                     }} defaultChecked />
+                    {/* User - ProfileMenu */}
                     <Avatar
-                        id="basic-button"
-                        aria-controls={open ? 'basic-menu' : undefined}
+                        id="profile-positioned-button"
+                        aria-controls={open ? "profile-positioned-menu" : undefined}
                         aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
+                        aria-expanded={open ? "true" : undefined}
                         onClick={handleClick}
+                        alt={faker.name.fullName()}
                         src={faker.image.avatar()}
                     />
                     <Menu
-                        id="basic-menu"
+                        MenuListProps={{
+                            "aria-labelledby": "fade-button",
+                        }}
+                        TransitionComponent={Fade}
+                        id="profile-positioned-menu"
+                        aria-labelledby="profile-positioned-button"
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleClose}
-                        MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                        }}
                         // fixing menu overlap user avatar
                         anchorOrigin={{
                             vertical: "bottom",
@@ -162,7 +171,8 @@ const SideBar = () => {
                                         onClick={(e) => {
                                             e.stopPropagation(); // stop menu popup
                                             if (idx === 2) {
-                                                dispatch(LogoutUser())
+                                                dispatch(LogoutUser());
+                                                socket.emit("end", { user_id });
                                             } else {
                                                 navigate(getMenuPath(idx));
                                             }

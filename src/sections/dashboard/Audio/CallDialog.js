@@ -68,7 +68,6 @@ const CallDialog = ({ open, handleClose }) => {
             handleClose();
         }
     };
-
     useEffect(() => {
         // TODO => emit audio_call event
         // create a job to decline call automatically after 30 sec if not picked
@@ -128,7 +127,6 @@ const CallDialog = ({ open, handleClose }) => {
             // ...
         }
         fetchToken();
-
         // Step 2 => Check browser compatibility
         zg.checkSystemRequirements()
             .then((result) => {
@@ -196,13 +194,11 @@ const CallDialog = ({ open, handleClose }) => {
                             // * Can be used to show connected status for a user (especially useful in a group call)
                         }
                     });
-
                     // Callback for updates on the status of ther users in the room.
                     zg.on("roomUserUpdate", async (roomID, updateType, userList) => {
                         console.warn(
                             `roomUserUpdate: room ${roomID}, 
-                            user ${updateType === "ADD" ? "added" : "left"
-                            } `,
+                            user ${updateType === "ADD" ? "added" : "left"} `,
                             JSON.stringify(userList)
                         );
                         if (updateType !== "ADD") {
