@@ -64,3 +64,9 @@ export const defaultLang = allLangs[0]; // English
 
 // DEFAULT ROOT PATH
 export const DEFAULT_PATH = PATH_DASHBOARD.general.app; // as '/app'
+
+// S3
+export const S3_BUCKET_NAME = '';
+export const AWS_ACCESS_KEY = '';
+export const AWS_SECRET_ACCESS_KEY = '';
+export const AWS_S3_REGION = '';

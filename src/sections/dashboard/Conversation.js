@@ -12,6 +12,9 @@ import { useTheme, alpha } from "@mui/material/styles";
 import { DotsThreeVertical, DownloadSimple, Image } from "phosphor-react";
 import { Message_options } from "../../data";
 import { Link } from "react-router-dom";
+import { LinkPreview } from "@dhaiwat10/react-link-preview";
+import Embed from "react-embed";
+
 const MessageOption = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -178,23 +181,12 @@ const LinkMsg = ({ el }) => {
                             borderRadius: 1,
                         }}
                     >
-                        <img
-                            src={el.preview}
-                            alt={el.message}
-                            style={{ maxHeight: 210, borderRadius: "10px" }}
-                        />
                         <Stack direction={"column"} spacing={2}>
-                            <Typography variant="subtitle2">
-                                Creating Chat App using MERN
-                            </Typography>
-                            <Typography
-                                component={Link}
-                                to="//https://www.youtube.com"
-                                variant="subtitle2"
-                                sx={{ color: theme.palette.primary.main }}
-                            >
-                                www.youtube.com/watch/v12uqywHTY2
-                            </Typography>
+                            <Embed
+                                width="300px"
+                                isDark
+                                url={`https://youtu.be/xoWxBR34qLE`}
+                            />
                         </Stack>
                     </Stack>
                     <Typography
