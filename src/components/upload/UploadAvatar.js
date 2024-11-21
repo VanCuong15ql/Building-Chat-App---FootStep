@@ -1,13 +1,9 @@
 import PropTypes from "prop-types";
 import { useDropzone } from "react-dropzone";
-// @mui
 import { Typography } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
-//
 import AvatarPreview from "./preview/AvatarPreview";
 import { Image } from "phosphor-react";
-
-// ----------------------------------------------------------------------
 
 const StyledDropZone = styled("div")(({ theme }) => ({
     width: 144,
@@ -40,8 +36,6 @@ const StyledPlaceholder = styled("div")(({ theme }) => ({
         duration: theme.transitions.duration.shorter,
     }),
 }));
-
-// ----------------------------------------------------------------------
 
 UploadAvatar.propTypes = {
     sx: PropTypes.object,

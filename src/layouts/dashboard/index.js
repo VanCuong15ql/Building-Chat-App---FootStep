@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Stack } from "@mui/material";
 import { Navigate, Outlet } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
-import SideBar from "./SideBar";
+import SideBar from "./SideBar"; // SideNav+ProfileMenu
 import { useDispatch, useSelector } from "react-redux";
 import { SelectConversation, showSnackbar } from "../../redux/slices/app";
 import { connectSocket, socket } from "../../socket";
@@ -30,6 +30,7 @@ import {
 
 const DashboardLayout = () => {
   const isDesktop = useResponsive("up", "md");
+  const { user_id } = useSelector((state) => state.auth);
   const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
     (state) => state.audioCall
   );
@@ -57,8 +58,6 @@ const DashboardLayout = () => {
   const handleCloseVideoNotification = () => {
     dispatch(CloseVideoNotificationDialog())
   }
-
-  const user_id = window.localStorage.getItem("user_id");
 
   useEffect(() => {
     if (isLoggedIn) {

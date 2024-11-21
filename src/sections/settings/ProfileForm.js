@@ -1,28 +1,45 @@
 import React, { useCallback } from "react";
 import * as Yup from "yup";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormProvider, { RHFTextField } from "../../components/hook-form";
-import {
-    Alert,
-    Button,
-    Stack,
-} from "@mui/material";
+import { Alert, Button, Stack } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { FetchUserProfile, UpdateUserProfile } from "../../redux/slices/app";
+import { RHFUploadAvatar } from "../../components/hook-form/RHFUpload";
 
 const ProfileForm = () => {
-    const loginSchema = Yup.object().shape({
-        name: Yup.string().required("Name is required"),
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(FetchUserProfile());
+    }, []);
+
+    const { user } = useSelector((state) => state.app);
+
+    const ProfileSchema = Yup.object().shape({
+        firstName: Yup.string().required("Name is required"),
         about: Yup.string().required("About is required"),
-        avatarUrl: Yup.string().required("Avatar is required").nullable(true),
+        avatar: Yup.string().required("Avatar is required").nullable(true),
     });
 
+    // old schema
+    // const loginSchema = Yup.object().shape({
+    //     name: Yup.string().required("Name is required"),
+    //     about: Yup.string().required("About is required"),
+    //     avatarUrl: Yup.string().required("Avatar is required").nullable(true),
+    // });
+
     const defaultValues = {
+        // ERROR: can not get data from user
         name: "",
         about: "",
+        avatar: "",
     };
 
     const methods = useForm({
-        resolver: yupResolver(loginSchema),
+        resolver: yupResolver(ProfileSchema),
         defaultValues,
     });
 
@@ -46,7 +63,7 @@ const ProfileForm = () => {
         });
         if (file) {
             setValue(
-                "avatarUrl",
+                "avatar",
                 newFile,
                 { shouldValidate: true },
                 // when change avatar, the validation rule will check again
@@ -54,32 +71,47 @@ const ProfileForm = () => {
         }
     }, [setValue]);
 
+    // need S3 bucket, fix in redux/slices/app.js
     const onSubmit = async (data) => {
         try {
             // api submit
             console.log("Data", data);
+            dispatch(UpdateUserProfile(data));
         } catch (error) {
-            console.log(error);
-            reset();
-            setError("afterSubmit", {
-                ...error,
-                message: error.message,
-            });
+            console.error(error);
+            // reset();
+            // setError("afterSubmit", {
+            //     ...error,
+            //     message: error.message,
+            // });
         }
     };
 
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={3}>
-                <Stack spacing={3}>
-                    {!!errors.afterSubmit && (
-                        <Alert severity="error">{errors.afterSubmit.message}</Alert>
-                    )}
-                    <RHFTextField name="name" label="Name" helperText={"This name is visible to your contacts"} />
-                    <RHFTextField multiline rows={3} maxRows={5} name="about" label="About" />
-                </Stack>
+            <Stack spacing={4}>
+                <RHFUploadAvatar name="avatar" maxSize={3145728} onDrop={handleDrop} />
+                <RHFTextField
+                    helperText={"This name is visible to your contacts"}
+                    name="firstName"
+                    label="First Name"
+                />
+                <RHFTextField
+                    multiline
+                    rows={4}
+                    maxRows={5}
+                    name="about"
+                    label="About"
+                />
                 <Stack direction={"row"} justifyContent="end">
-                    <Button color="primary" size="large" type="submit" variant="outlined">Save</Button>
+                    <Button
+                        color="primary"
+                        size="large"
+                        type="submit"
+                        variant="contained"
+                    >
+                        Save
+                    </Button>
                 </Stack>
             </Stack>
         </FormProvider>

@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-// @mui
 import { Box } from '@mui/material';
-
-// ----------------------------------------------------------------------
 
 const Image = forwardRef(
     ({ disabledEffect = false, effect = 'blur', sx, ...other }, ref) => {
