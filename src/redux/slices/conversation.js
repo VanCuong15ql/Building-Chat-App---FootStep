@@ -34,7 +34,7 @@ const slice = createSlice({
                     time: "9:36",
                     unread: 0,
                     pinned: false,
-                    about: this_user.about,
+                    about: this_user?.about,
                 };
             });
 
@@ -45,7 +45,7 @@ const slice = createSlice({
             const this_conversation = action.payload.conversation;
             state.direct_chat.conversations = state.direct_chat.conversations.map(
                 (el) => {
-                    if (el.id !== this_conversation._id) {
+                    if (el?.id !== this_conversation?._id) {
                         return el;
                     } else {
                         const user = this_conversation.participants.find(
@@ -76,9 +76,9 @@ const slice = createSlice({
             );
             state.direct_chat.conversations.push({
                 id: this_conversation._id,
-                user_id: user._id,
-                name: `${user.firstName} ${user.lastName}`,
-                online: user.status === "Online",
+                user_id: user?._id,
+                name: `${user?.firstName} ${user?.lastName}`,
+                online: user?.status === "Online",
                 img: faker.image.avatar(),
                 msg: faker.music.songName(),
                 time: "9:36",

@@ -64,8 +64,8 @@ const ProfileForm = () => {
       console.log("Data", data);
       dispatch(
         UpdateUserProfile({
-          firstName: data.firstName,
-          about: data.about,
+          firstName: data?.firstName,
+          about: data?.about,
           avatar: file,
         })
       );
