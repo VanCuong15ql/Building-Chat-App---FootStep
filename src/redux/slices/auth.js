@@ -148,7 +148,7 @@ export function RegisterUser(formValues) {
 
 export function VerifyEmail(formValues) {
     return async (dispatch, getState) => {
-        await axios.post("/auth/verify-otp", {
+        await axios.post("/auth/verify", {
             ...formValues
         }, {
             headers: {

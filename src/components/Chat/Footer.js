@@ -1,3 +1,4 @@
+import React, { useRef, useState } from "react";
 import {
     Box,
     Fab,
@@ -18,11 +19,6 @@ import {
     User,
 } from "phosphor-react";
 import { useTheme, styled } from "@mui/material/styles";
-import React, { useRef, useState } from "react";
-import useResponsive from "../../hooks/useResponsive";
-
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
 import { socket } from "../../socket";
 import { useSelector } from "react-redux";
 
@@ -57,6 +53,7 @@ const Actions = [
         icon: <File size={24} />,
         y: 312,
         title: "Document",
+        action: "document",
     },
     {
         color: "#013f7f",
@@ -72,6 +69,7 @@ const ChatInput = ({
     setValue,
     value,
     inputRef,
+    handleFileUpload, // Thêm props xử lý tải file
 }) => {
     const [openActions, setOpenActions] = React.useState(false);
 
@@ -95,10 +93,13 @@ const ChatInput = ({
                                 display: openActions ? "inline-block" : "none",
                             }}
                         >
-                            {Actions.map((el) => (
-                                <Tooltip placement="right" title={el.title}>
+                            {Actions.map((el, index) => (
+                                <Tooltip key={index} placement="right" title={el.title}>
                                     <Fab
                                         onClick={() => {
+                                            if (el.action === "document") {
+                                                handleFileUpload(); // Gọi hàm tải file
+                                            }
                                             setOpenActions(!openActions);
                                         }}
                                         sx={{
@@ -143,54 +144,52 @@ const ChatInput = ({
     );
 };
 
-function linkify(text) {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(
-        urlRegex,
-        (url) => `<a href="${url}" target="_blank">${url}</a>`
-    );
-}
-
-function containsUrl(text) {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return urlRegex.test(text);
-}
-
 const Footer = () => {
     const theme = useTheme();
-
     const { current_conversation } = useSelector(
         (state) => state.conversation.direct_chat
     );
-
     const user_id = window.localStorage.getItem("user_id");
-
-    const isMobile = useResponsive("between", "md", "xs", "sm");
-
-    const { sidebar, room_id } = useSelector((state) => state.app);
+    const { room_id } = useSelector((state) => state.app);
 
     const [openPicker, setOpenPicker] = React.useState(false);
-
     const [value, setValue] = useState("");
     const inputRef = useRef(null);
+    const fileInputRef = useRef(null); // Ref cho input file
 
-    function handleEmojiClick(emoji) {
-        const input = inputRef.current;
-
-        if (input) {
-            const selectionStart = input.selectionStart;
-            const selectionEnd = input.selectionEnd;
-
-            setValue(
-                value.substring(0, selectionStart) +
-                emoji +
-                value.substring(selectionEnd)
-            );
-
-            // Move the cursor to the end of the inserted emoji
-            input.selectionStart = input.selectionEnd = selectionStart + 1;
+    const handleFileUpload = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click(); // Kích hoạt sự kiện click
         }
-    }
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        let to = "";
+        if (current_conversation.user_id) to = current_conversation.user_id;
+        if (file) {
+            console.log("Tệp được chọn:", file);
+            socket.emit("file_message", {
+                from: user_id,
+                to: to,
+                name_file: file.name,
+                file: file
+            });
+        }
+    };
+
+    const onClick = () => {
+        let to = "";
+        if (current_conversation.user_id) to = current_conversation.user_id;
+        socket.emit("text_message", {
+            message: value,
+            conversation_id: room_id,
+            from: user_id,
+            to: to,
+            type: "Text",
+        });
+        setValue(""); // Xóa nội dung sau khi gửi
+    };
 
     return (
         <Box
@@ -199,8 +198,14 @@ const Footer = () => {
                 backgroundColor: "transparent !important",
             }}
         >
+            <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange} // Xử lý khi người dùng chọn file
+            />
             <Box
-                p={isMobile ? 1 : 2}
+                p={2}
                 width={"100%"}
                 sx={{
                     backgroundColor:
@@ -210,32 +215,15 @@ const Footer = () => {
                     boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
                 }}
             >
-                <Stack direction="row" alignItems={"center"} spacing={isMobile ? 1 : 3}>
+                <Stack direction="row" alignItems={"center"} spacing={2}>
                     <Stack sx={{ width: "100%" }}>
-                        <Box
-                            style={{
-                                zIndex: 10,
-                                position: "fixed",
-                                display: openPicker ? "inline" : "none",
-                                bottom: 81,
-                                right: isMobile ? 20 : sidebar.open ? 420 : 100,
-                            }}
-                        >
-                            <Picker
-                                theme={theme.palette.mode}
-                                data={data}
-                                onEmojiSelect={(emoji) => {
-                                    handleEmojiClick(emoji.native);
-                                }}
-                            />
-                        </Box>
-                        {/* Chat Input */}
                         <ChatInput
                             inputRef={inputRef}
                             value={value}
                             setValue={setValue}
                             openPicker={openPicker}
                             setOpenPicker={setOpenPicker}
+                            handleFileUpload={handleFileUpload} // Truyền hàm xử lý tải file
                         />
                     </Stack>
                     <Box
@@ -251,17 +239,7 @@ const Footer = () => {
                             alignItems={"center"}
                             justifyContent="center"
                         >
-                            <IconButton
-                                onClick={() => {
-                                    socket.emit("text_message", {
-                                        message: linkify(value),
-                                        conversation_id: room_id,
-                                        from: user_id,
-                                        to: current_conversation.user_id,
-                                        type: containsUrl(value) ? "Link" : "Text",
-                                    });
-                                }}
-                            >
+                            <IconButton onClick={onClick}>
                                 <PaperPlaneTilt color="#ffffff" />
                             </IconButton>
                         </Stack>

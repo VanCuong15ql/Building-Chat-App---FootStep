@@ -94,6 +94,7 @@ const slice = createSlice({
                 type: "msg",
                 subtype: el.type,
                 message: el.text,
+                file: el?.file ?? "",
                 incoming: el.to === user_id,
                 outgoing: el.from === user_id,
             }));
