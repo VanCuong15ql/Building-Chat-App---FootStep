@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { createSlice } from "@reduxjs/toolkit";
+import { AWS_S3_REGION, S3_BUCKET_NAME } from "../../config";
 
 const user_id = window.localStorage.getItem("user_id")
 
@@ -28,11 +29,12 @@ const slice = createSlice({
                     user_id: this_user?._id,
                     name: `${this_user?.firstName} ${this_user?.lastName}`,
                     online: this_user?.status === "Online",
-                    img: faker.image.avatar(),
-                    msg: faker.music.songName(),
+                    img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${this_user?.avatar}`,
+                    msg: el.messages.slice(-1)[0].text, 
                     time: "9:36",
                     unread: 0,
                     pinned: false,
+                    about: this_user?.about,
                 };
             });
 
@@ -43,7 +45,7 @@ const slice = createSlice({
             const this_conversation = action.payload.conversation;
             state.direct_chat.conversations = state.direct_chat.conversations.map(
                 (el) => {
-                    if (el.id !== this_conversation._id) {
+                    if (el?.id !== this_conversation?._id) {
                         return el;
                     } else {
                         const user = this_conversation.participants.find(
@@ -74,9 +76,9 @@ const slice = createSlice({
             );
             state.direct_chat.conversations.push({
                 id: this_conversation._id,
-                user_id: user._id,
-                name: `${user.firstName} ${user.lastName}`,
-                online: user.status === "Online",
+                user_id: user?._id,
+                name: `${user?.firstName} ${user?.lastName}`,
+                online: user?.status === "Online",
                 img: faker.image.avatar(),
                 msg: faker.music.songName(),
                 time: "9:36",

@@ -4,12 +4,12 @@ import { Navigate, Outlet } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import SideBar from "./SideBar"; // SideNav+ProfileMenu
 import { useDispatch, useSelector } from "react-redux";
-import { SelectConversation, showSnackbar } from "../../redux/slices/app";
+import { FetchUserProfile, SelectConversation, showSnackbar } from "../../redux/slices/app";
 import { connectSocket, socket } from "../../socket";
 import {
   AddDirectConversation,
   UpdateDirectConversation,
-  AddDirectMessage
+  AddDirectMessage,
 } from "../../redux/slices/conversation";
 import AudioCallNotification from "../../sections/dashboard/Audio/CallNotification";
 import VideoCallNotification from "../../sections/dashboard/video/CallNotification";
@@ -19,17 +19,18 @@ import {
   UpdateAudioCallDialog,
 } from "../../redux/slices/audioCall";
 import AudioCallDialog from "../../sections/dashboard/Audio/CallDialog";
-import VideoCallDialog from "../../sections/dashboard/video/CallDialog"
+import VideoCallDialog from "../../sections/dashboard/video/CallDialog";
 import {
   CloseVideoNotificationDialog,
   PushToVideoCallQueue,
-  UpdateVideoCallDialog
+  UpdateVideoCallDialog,
 } from "../../redux/slices/videoCall";
 
 // fix logined - make it dynamic
 
 const DashboardLayout = () => {
   const isDesktop = useResponsive("up", "md");
+  const dispatch = useDispatch();
   const { user_id } = useSelector((state) => state.auth);
   const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
     (state) => state.audioCall
@@ -39,9 +40,13 @@ const DashboardLayout = () => {
   );
 
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { conversations, current_conversation } = useSelector((state) => state.conversation.direct_chat)
+  const { conversations, current_conversation } = useSelector(
+    (state) => state.conversation.direct_chat
+  );
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(FetchUserProfile());
+  }, []);
 
   const handleCloseAudioDialog = () => {
     dispatch(UpdateAudioCallDialog({ state: false }));
@@ -52,21 +57,21 @@ const DashboardLayout = () => {
   };
 
   const handleCloseAudioNotification = () => {
-    dispatch(CloseAudioNotificationDialog())
-  }
+    dispatch(CloseAudioNotificationDialog());
+  };
 
   const handleCloseVideoNotification = () => {
-    dispatch(CloseVideoNotificationDialog())
-  }
+    dispatch(CloseVideoNotificationDialog());
+  };
 
   useEffect(() => {
     if (isLoggedIn) {
       window.onload = function () {
         if (!window.location.hash) {
-          window.location = window.location + '#loaded';
+          window.location = window.location + "#loaded";
           window.location.reload();
         }
-      }
+      };
 
       window.onload();
 
@@ -89,7 +94,10 @@ const DashboardLayout = () => {
         const message = data.message;
         console.log(current_conversation, data);
         // check if msg we got is from currently selected conversation
-        if (current_conversation && current_conversation.id === data.conversation_id) {
+        if (
+          current_conversation &&
+          current_conversation?.id === data.conversation_id
+        ) {
           dispatch(
             AddDirectMessage({
               id: message._id,
@@ -101,7 +109,7 @@ const DashboardLayout = () => {
             })
           );
         }
-      })
+      });
 
       // new_friend_requests
 
@@ -110,32 +118,34 @@ const DashboardLayout = () => {
           showSnackbar({
             severity: "success",
             message: "New friend request received",
-          }))
-      })
+          })
+        );
+      });
 
       socket.on("request_accepted", (data) => {
         dispatch(
           showSnackbar({
             severity: "success",
             message: "Friend Request Accepted",
-          }))
-      })
+          })
+        );
+      });
 
       socket.on("request_sent", (data) => {
-        dispatch(showSnackbar({ severity: "success", message: data.message }))
-      })
+        dispatch(showSnackbar({ severity: "success", message: data.message }));
+      });
 
       socket.on("start_chat", (data) => {
-        console.log(data)
+        console.log(data);
         const existing_conversation = conversations.find(
-          (el) => el.id === data._id
+          (el) => el?.id === data._id
         );
         if (existing_conversation) {
-          dispatch(UpdateDirectConversation({ conversation: data }))
+          dispatch(UpdateDirectConversation({ conversation: data }));
         } else {
-          dispatch(AddDirectConversation({ conversation: data }))
+          dispatch(AddDirectConversation({ conversation: data }));
         }
-        dispatch(SelectConversation({ room_id: data._id }))
+        dispatch(SelectConversation({ room_id: data._id }));
       });
     }
 
@@ -151,7 +161,7 @@ const DashboardLayout = () => {
 
   if (!isLoggedIn) {
     // navigate all path to login if not authenticated
-    return <Navigate to="/auth/login" />
+    return <Navigate to="/auth/login" />;
   }
 
   return (
@@ -159,7 +169,7 @@ const DashboardLayout = () => {
       <Stack direction="row">
         {isDesktop && (
           // Side bar
-          < SideBar />
+          <SideBar />
         )}
         <Outlet />
         {/* Chats and conservation render here */}
