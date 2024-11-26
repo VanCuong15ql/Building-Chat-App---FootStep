@@ -96,6 +96,7 @@ const DashboardLayout = () => {
               type: "msg",
               subtype: message.type,
               message: message.text,
+              file: message?.file ?? "",
               incoming: message.to === user_id,
               outgoing: message.from === user_id,
             })
