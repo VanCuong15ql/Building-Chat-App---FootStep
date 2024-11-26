@@ -4,7 +4,7 @@ import { enUS, frFR, zhCN, viVN, arSD } from '@mui/material/locale';
 // routes
 import { PATH_DASHBOARD } from "./routes/paths";
 
-export const BASE_URL = "http://localhost:3001"
+export const BASE_URL = "http://localhost:4000"
 
 export const defaultSettings = {
   themeMode: "light",
@@ -64,9 +64,3 @@ export const defaultLang = allLangs[0]; // English
 
 // DEFAULT ROOT PATH
 export const DEFAULT_PATH = PATH_DASHBOARD.general.app; // as '/app'
-
-// S3
-export const S3_BUCKET_NAME = '';
-export const AWS_ACCESS_KEY = '';
-export const AWS_SECRET_ACCESS_KEY = '';
-export const AWS_S3_REGION = '';
