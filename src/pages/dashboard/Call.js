@@ -14,10 +14,12 @@ import {
 import { MagnifyingGlass, Plus } from "phosphor-react";
 import { SimpleBarStyle } from "../../components/Scrollbar";
 import { useTheme } from "@mui/material/styles";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CallLogElement } from "../../components/CallElement";
 import { CallLogs } from "../../data";
 import StartCall from "../../sections/main/StartCall";
+import { useDispatch, useSelector } from "react-redux";
+import { FetchCallLogs } from "../../redux/slices/app";
 
 const Call = () => {
   const theme = useTheme();
