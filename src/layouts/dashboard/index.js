@@ -31,7 +31,7 @@ import {
 const DashboardLayout = () => {
   const isDesktop = useResponsive("up", "md");
   const dispatch = useDispatch();
-  const { user_id } = useSelector((state) => state.auth);
+  const user_id = window.localStorage.getItem("user_id");
   const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
     (state) => state.audioCall
   );
