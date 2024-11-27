@@ -15,7 +15,7 @@ const UsersList = () => {
 
     return (
         <>
-            {users.map((el, idx) => {
+            {users?.map((el, idx) => {
                 return <UserComponent key={el._id} {...el} />;;
             })}
         </>
@@ -33,7 +33,7 @@ const FriendsList = () => {
 
     return (
         <>
-            {friends.map((el, idx) => {
+            {friends?.map((el, idx) => {
                 return <FriendComponent key={el._id} {...el} />;
             })}
         </>
@@ -51,7 +51,7 @@ const FriendRequestList = () => {
 
     return (
         <>
-            {friendRequests.map((el, idx) => {
+            {friendRequests?.map((el, idx) => {
                 return <FriendRequestComponent key={el._id} {...el.sender} id={el._id} />;
             })}
         </>
