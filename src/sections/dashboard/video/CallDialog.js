@@ -302,12 +302,18 @@ const CallDialog = ({ open, handleClose }) => {
                 fullWidth
                 maxWidth="lg"
                 PaperProps={{
-                    style: { height: "80vh", borderRadius: "10px" },
+                    style: {
+                        height: "80vh",
+                        width: "80vw",
+                        borderRadius: "10px",
+                        overflow: "hidden"
+                    },
                 }}>
                 <DialogContent
                     style={{
                         position: "relative",
-                        height: "90%",
+                        height: "100%",
+                        width: "100%",
                         padding: 0
                     }}>
                     {/* <Stack direction="row" spacing={24} p={2}>
@@ -333,9 +339,9 @@ const CallDialog = ({ open, handleClose }) => {
                     <video
                         id="remote-video"
                         style={{
-                            width: "90%",
-                            height: "90%",
-                            objectFit: "cover",
+                            width: "100%",
+                            height: "calc(100% - 10px)",
+                            objectFit: "cover", // full screen
                         }}
                         controls={false}
                     />
