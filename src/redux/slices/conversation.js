@@ -11,7 +11,6 @@ const initialState = {
         current_messages: [],
     },
     group_chat: {
-
     }
 }
 
@@ -30,7 +29,7 @@ const slice = createSlice({
                     name: `${this_user?.firstName} ${this_user?.lastName}`,
                     online: this_user?.status === "Online",
                     img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${this_user?.avatar}`,
-                    msg: el.messages.slice(-1)[0].text, 
+                    msg: el.messages.slice(-1)[0].text,
                     time: "9:36",
                     unread: 0,
                     pinned: false,

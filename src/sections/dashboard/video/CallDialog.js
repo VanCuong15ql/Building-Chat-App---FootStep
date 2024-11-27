@@ -299,9 +299,24 @@ const CallDialog = ({ open, handleClose }) => {
                 keepMounted
                 onClose={handleDisconnect}
                 aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogContent>
-                    <Stack direction="row" spacing={24} p={2}>
+                fullWidth
+                maxWidth="lg"
+                PaperProps={{
+                    style: {
+                        height: "80vh",
+                        width: "80vw",
+                        borderRadius: "10px",
+                        overflow: "hidden"
+                    },
+                }}>
+                <DialogContent
+                    style={{
+                        position: "relative",
+                        height: "100%",
+                        width: "100%",
+                        padding: 0
+                    }}>
+                    {/* <Stack direction="row" spacing={24} p={2}>
                         <Stack>
                             <video
                                 style={{ height: 200, width: 200 }}
@@ -318,7 +333,35 @@ const CallDialog = ({ open, handleClose }) => {
                             />
                             <audio id="remote-audio" controls={false} />
                         </Stack>
-                    </Stack>
+                    </Stack> */}
+
+                    {/* Remote Video */}
+                    <video
+                        id="remote-video"
+                        style={{
+                            width: "100%",
+                            height: "calc(100% - 10px)",
+                            objectFit: "cover", // full screen
+                        }}
+                        controls={false}
+                    />
+                    <audio id="remote-audio" controls={false} />
+                    {/* Local Video */}
+                    <video
+                        id="local-video"
+                        style={{
+                            position: "absolute",
+                            top: "10px",
+                            left: "10px",
+                            width: "200px",
+                            height: "150px",
+                            borderRadius: "10px",
+                            border: "1px solid white",
+                            boxShadow: "0 0 10px rgba(0,0,0,0.5)",
+                        }}
+                        controls={false}
+                    />
+                    <audio id="local-audio" controls={false} />
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -327,6 +370,7 @@ const CallDialog = ({ open, handleClose }) => {
                         }}
                         variant="contained"
                         color="error"
+                        style={{ width: "120px" }}
                     >
                         End Call
                     </Button>
