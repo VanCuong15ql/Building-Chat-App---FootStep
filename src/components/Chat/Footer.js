@@ -19,6 +19,7 @@ import {
     User,
 } from "phosphor-react";
 import { useTheme, styled } from "@mui/material/styles";
+import { Close } from "@mui/icons-material";
 import { socket } from "../../socket";
 import { useSelector } from "react-redux";
 
@@ -68,79 +69,119 @@ const ChatInput = ({
     setOpenPicker,
     setValue,
     value,
+    setPastedImage,
+    setReviewImage,
+    reviewImage,
     inputRef,
-    handleFileUpload, // Thêm props xử lý tải file
+    handleFileUpload,  
+    handlePasteImage,
 }) => {
     const [openActions, setOpenActions] = React.useState(false);
 
     return (
-        <StyledInput
-            inputRef={inputRef}
-            value={value}
-            onChange={(event) => {
-                setValue(event.target.value);
-            }}
-            fullWidth
-            placeholder="Write a message..."
-            variant="filled"
-            InputProps={{
-                disableUnderline: true,
-                startAdornment: (
-                    <Stack sx={{ width: "max-content" }}>
-                        <Stack
-                            sx={{
-                                position: "relative",
-                                display: openActions ? "inline-block" : "none",
-                            }}
-                        >
-                            {Actions.map((el, index) => (
-                                <Tooltip key={index} placement="right" title={el.title}>
-                                    <Fab
-                                        onClick={() => {
-                                            if (el.action === "document") {
-                                                handleFileUpload(); // Gọi hàm tải file
-                                            }
-                                            setOpenActions(!openActions);
-                                        }}
-                                        sx={{
-                                            position: "absolute",
-                                            top: -el.y,
-                                            backgroundColor: el.color,
-                                        }}
-                                        aria-label="add"
-                                    >
-                                        {el.icon}
-                                    </Fab>
-                                </Tooltip>
-                            ))}
-                        </Stack>
+        <Box>
+            <StyledInput
+                inputRef={inputRef}
+                value={value}
+                onChange={(event) => {
+                    setValue(event.target.value);
+                }}
+                onPaste={handlePasteImage}
+                fullWidth
+                placeholder="Write a message..."
+                variant="filled"
+                InputProps={{
+                    disableUnderline: true,
+                    startAdornment: (
+                        <Stack sx={{ width: "max-content" }}>
+                            <Stack
+                                sx={{
+                                    position: "relative",
+                                    display: openActions ? "inline-block" : "none",
+                                }}
+                            >
+                                {Actions.map((el, index) => (
+                                    <Tooltip key={index} placement="right" title={el.title}>
+                                        <Fab
+                                            onClick={() => {
+                                                if (el.action === "document") {
+                                                    handleFileUpload(); // Gọi hàm tải file
+                                                }
+                                                setOpenActions(!openActions);
+                                            }}
+                                            sx={{
+                                                position: "absolute",
+                                                top: -el.y,
+                                                backgroundColor: el.color,
+                                            }}
+                                            aria-label="add"
+                                        >
+                                            {el.icon}
+                                        </Fab>
+                                    </Tooltip>
+                                ))}
+                            </Stack>
 
-                        <InputAdornment>
-                            <IconButton
-                                onClick={() => {
-                                    setOpenActions(!openActions);
-                                }}
-                            >
-                                <LinkSimple />
-                            </IconButton>
-                        </InputAdornment>
-                    </Stack>
-                ),
-                endAdornment: (
-                    <Stack sx={{ position: "relative" }}>
-                        <InputAdornment>
-                            <IconButton
-                                onClick={() => {
-                                    setOpenPicker(!openPicker);
-                                }}
-                            >
-                                <Smiley />
-                            </IconButton>
-                        </InputAdornment>
-                    </Stack>
-                ),
-            }}
-        />
+                            <InputAdornment>
+                                <IconButton
+                                    onClick={() => {
+                                        setOpenActions(!openActions);
+                                    }}
+                                >
+                                    <LinkSimple />
+                                </IconButton>
+                            </InputAdornment>
+                        </Stack>
+                    ),
+                    endAdornment: (
+                        <Stack sx={{ position: "relative" }}>
+                            <InputAdornment>
+                                <IconButton
+                                    onClick={() => {
+                                        setOpenPicker(!openPicker);
+                                    }}
+                                >
+                                    <Smiley />
+                                </IconButton>
+                            </InputAdornment>
+                        </Stack>
+                    ),
+                }}
+            />
+
+            {reviewImage && (
+                <Box
+                    mt={2}
+                    sx={{
+                        position: "relative",
+                        display: "inline-block",
+                        maxWidth: "100%",
+                    }}
+                >
+                    <img
+                        src={reviewImage}
+                        alt="Pasted content"
+                        style={{
+                            maxWidth: 400,
+                            maxHeight: 400,
+                        }}
+                    />
+                    <IconButton
+                        onClick={() => {setReviewImage(null); setPastedImage(null);}}
+                        sx={{
+                            position: "absolute",
+                            top: 4,
+                            right: 4,
+                            backgroundColor: "rgba(255, 255, 255, 0.8)",
+                            ":hover": { backgroundColor: "rgba(255, 255, 255, 1)" },
+                        }}
+                        size="small"
+                    >
+                        <Close fontSize="small" />
+                    </IconButton>
+                </Box>
+            )}
+        </Box>
     );
 };
 
@@ -154,12 +195,14 @@ const Footer = () => {
 
     const [openPicker, setOpenPicker] = React.useState(false);
     const [value, setValue] = useState("");
+    const [pastedImage, setPastedImage] = useState(null);
+    const [reviewImage, setReviewImage] = useState(null);
     const inputRef = useRef(null);
-    const fileInputRef = useRef(null); // Ref cho input file
+    const fileInputRef = useRef(null);
 
     const handleFileUpload = () => {
         if (fileInputRef.current) {
-            fileInputRef.current.click(); // Kích hoạt sự kiện click
+            fileInputRef.current.click(); 
         }
     };
 
@@ -178,17 +221,44 @@ const Footer = () => {
         }
     };
 
-    const onClick = () => {
+    const handlePasteImage = (event) => {
+        const items = event.clipboardData.files;
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.type.startsWith("image/")) {
+                const file = item;
+                const imageUrl = URL.createObjectURL(file);
+                setPastedImage(file);
+                setReviewImage(imageUrl);
+                break;
+            }
+        }
+    };
+
+    const onClickToSend = () => {
         let to = "";
         if (current_conversation.user_id) to = current_conversation.user_id;
-        socket.emit("text_message", {
-            message: value,
-            conversation_id: room_id,
-            from: user_id,
-            to: to,
-            type: "Text",
-        });
-        setValue(""); // Xóa nội dung sau khi gửi
+        if (value) {
+            socket.emit("text_message", {
+                message: value,
+                conversation_id: room_id,
+                from: user_id,
+                to: to,
+                type: "Text",
+            });
+            setValue(""); 
+        }
+        if (pastedImage) {
+            console.log("Image send: ", pastedImage);
+            socket.emit("file_message", {
+                from: user_id,
+                to: to,
+                name_file: `${Date.now()}.png`,
+                file: pastedImage,
+            });
+            setPastedImage(null);
+            setReviewImage(null);
+        }
     };
 
     return (
@@ -221,9 +291,13 @@ const Footer = () => {
                             inputRef={inputRef}
                             value={value}
                             setValue={setValue}
+                            setPastedImage={setPastedImage}
+                            reviewImage={reviewImage}
+                            setReviewImage={setReviewImage}
                             openPicker={openPicker}
                             setOpenPicker={setOpenPicker}
-                            handleFileUpload={handleFileUpload} // Truyền hàm xử lý tải file
+                            handleFileUpload={handleFileUpload}
+                            handlePasteImage={handlePasteImage}
                         />
                     </Stack>
                     <Box
@@ -239,7 +313,9 @@ const Footer = () => {
                             alignItems={"center"}
                             justifyContent="center"
                         >
-                            <IconButton onClick={onClick}>
+                            <IconButton 
+                                onClick={onClickToSend}
+                            >
                                 <PaperPlaneTilt color="#ffffff" />
                             </IconButton>
                         </Stack>

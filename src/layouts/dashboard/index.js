@@ -71,6 +71,7 @@ const DashboardLayout = () => {
       window.onload();
 
       if (!socket) {
+        console.log(Date.now(), "connecting socket")
         connectSocket(user_id);
       }
 

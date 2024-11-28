@@ -53,7 +53,7 @@ const MessageOption = () => {
 const TextMsg = ({ el, menu }) => {
     const theme = useTheme();
     const clickTypography = () => {
-        if (el.file !== "") window.open(el.file, "_blank");
+        if (el.subtype === "File") window.open(el.file, "_blank");
     };
     return (
         <Stack direction="row" justifyContent={el.incoming ? "start" : "end"}>
@@ -68,13 +68,42 @@ const TextMsg = ({ el, menu }) => {
             width: "max-content",
             }}
         >
-            <Typography
-                variant="body2"
-                onClick={clickTypography}
-                color={el.incoming ? theme.palette.text : "#fff"}
-            >
-                {el.message}
-            </Typography>
+            {(el.subtype === "Text" || el.subtype === "File") && 
+                <Typography
+                    variant="body2"
+                    onClick={clickTypography}
+                    color={el.incoming ? theme.palette.text : "#fff"}
+                >
+                    {el.message}
+                </Typography>
+            }
+
+            {el.subtype === "Image" && 
+                <Typography
+                    variant="body2"
+                    onClick={clickTypography}
+                    color={el.incoming ? theme.palette.text : "#fff"}
+                >
+                    <img 
+                        src={el.file}
+                        alt="chat-image"
+                        style={{maxHeight: 400, maxWidth: 400}}
+                    />
+                </Typography>
+            }
+
+            {el.subtype === "Video" && 
+                <Typography
+                    variant="body2"
+                    onClick={clickTypography}
+                    color={el.incoming ? theme.palette.text : "#fff"}
+                >
+                    <video controls loop style={{maxHeight: 500, maxWidth: 500}}>
+                        <source src={el.file} type="video/mp4"/>
+                    </video>
+                </Typography>
+            }
+
         </Box>
         {menu && <MessageOption />}
         </Stack>
