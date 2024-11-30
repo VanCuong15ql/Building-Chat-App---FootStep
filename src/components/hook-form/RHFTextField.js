@@ -1,13 +1,15 @@
 import PropTypes from "prop-types";
 import { useFormContext, Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
+import { useState } from "react";
 
 RHFTextField.propTypes = {
   name: PropTypes.string,
   helperText: PropTypes.node,
 };
-export default function RHFTextField({name, helperText, ...other}) {
+export default function RHFTextField({name, helperText, user_value, ...other}) {
   const { control } = useFormContext();
+  const [typing, setTyping] = useState(false);
   return (
     <Controller
       name={name}
@@ -16,11 +18,11 @@ export default function RHFTextField({name, helperText, ...other}) {
         <TextField
           {...field}
           fullWidth
+          InputLabelProps={{shrink: true}}
           value={
-            typeof field.value === "number" && field.value===0
-                ? ""
-                : field.value
+            typing ? field.value : (user_value ? user_value : "")
           }
+          onMouseEnter={() => setTyping(true)}
           error={!!error}
           helperText={error ? error.message : helperText}
           {...other}

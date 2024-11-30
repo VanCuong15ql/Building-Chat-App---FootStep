@@ -4,7 +4,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import SideBar from "./SideBar"; // SideNav+ProfileMenu
 import { useDispatch, useSelector } from "react-redux";
-import { SelectConversation, showSnackbar } from "../../redux/slices/app";
+import { SelectConversation, showSnackbar, slice } from "../../redux/slices/app";
 import { connectSocket, socket } from "../../socket";
 import {
   AddDirectConversation,
@@ -37,7 +37,7 @@ const DashboardLayout = () => {
   const { open_video_notification_dialog, open_video_dialog } = useSelector(
     (state) => state.videoCall
   );
-
+  const { user } = useSelector((state) => state.app);
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { conversations, current_conversation } = useSelector((state) => state.conversation.direct_chat)
 
@@ -74,6 +74,10 @@ const DashboardLayout = () => {
         console.log(Date.now(), "connecting socket")
         connectSocket(user_id);
       }
+
+      socket.on("avatar_saved", (data) => {
+        dispatch(slice.actions.updateUser({ user: data.user }));    
+      });
 
       socket.on("audio_call_notification", (data) => {
         // TODO => dispatch an action to add this in call_queue

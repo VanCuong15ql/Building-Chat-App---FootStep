@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
+import {socket} from "../../socket";
 import { uuid } from "uuidv4";
 import S3 from "../../utils/s3";
 import { S3_BUCKET_NAME } from "../../config";
@@ -25,7 +26,7 @@ const initialState = {
     room_id: null,
 };
 
-const slice = createSlice({
+export const slice = createSlice({
     name: 'app',
     initialState,
     reducers: {
@@ -237,22 +238,26 @@ export const UpdateUserProfile = (formValues) => {
         //         });
         //     }
         // );
-        // axios.patch(
-        //     "/user/update-me",
-        //     { ...formValues, avatar: key },
-        //     {
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //             Authorization: `Bearer ${getState().auth.token}`,
-        //         },
-        //     }
-        // )
-        //     .then((response) => {
-        //         console.log(response);
-        //         dispatch(slice.actions.updateUser({ user: response.data.data }));
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
+        if (formValues.avatar_file!==null) socket.emit("save_avatar", {file: formValues.avatar_file});
+        let newFormValues = {...formValues};
+        delete newFormValues.avatar_file;
+        delete newFormValues.avatar;
+        axios.patch(
+            "/user/update-me",
+            { ...newFormValues },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${getState().auth.token}`,
+                },
+            }
+        )
+        .then((response) => {
+            console.log(response);
+            dispatch(slice.actions.updateUser({ user: response.data.data }));
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     };
 };
