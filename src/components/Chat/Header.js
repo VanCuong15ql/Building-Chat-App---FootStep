@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Avatar,
     Badge,
@@ -14,12 +14,13 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { CaretDown, MagnifyingGlass, Phone, VideoCamera } from "phosphor-react";
-import { faker } from "@faker-js/faker";
 import useResponsive from "../../hooks/useResponsive";
 import { ToggleSidebar } from "../../redux/slices/app";
 import { useDispatch, useSelector } from "react-redux";
 import { StartAudioCall } from "../../redux/slices/audioCall";
 import { StartVideoCall } from "../../redux/slices/videoCall";
+import axios from "../../utils/axios";
+import { faker } from "@faker-js/faker";
 
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -71,16 +72,36 @@ const ChatHeader = () => {
     const isMobile = useResponsive("between", "md", "xs", "sm");
     const theme = useTheme();
     const { current_conversation } = useSelector((state) => state.conversation.direct_chat);
+    const [conversationMenuAnchorEl, setConversationMenuAnchorEl] = useState(null);
 
-    const [conversationMenuAnchorEl, setConversationMenuAnchorEl] =
-        React.useState(null);
     const openConversationMenu = Boolean(conversationMenuAnchorEl);
+
     const handleClickConversationMenu = (event) => {
         setConversationMenuAnchorEl(event.currentTarget);
     };
     const handleCloseConversationMenu = () => {
         setConversationMenuAnchorEl(null);
     };
+
+    // const [avatarLink, setAvatarLink] = useState("");
+    // useEffect(() => {
+    //     async function getUser() {
+    //         try {
+    //             let data = await axios.get(`/user/get-user-by-id/${current_conversation.user_id}`, {
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     Authorization: `Bearer ${window.localStorage.getItem("token_access")}`,
+    //                 },
+    //             });
+    //             if (!(data && data.data && data.data.data && data.data.data.avatar)) return;
+    //             console.log(`get user by id ${current_conversation.user_id}: `, data.data.data);
+    //             setAvatarLink(data.data.data.avatar);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     };
+    //     getUser();
+    // }, [current_conversation]);
 
     return (
         <>
@@ -118,14 +139,15 @@ const ChatHeader = () => {
                                 variant="dot"
                             >
                                 <Avatar
-                                    alt={faker.name.fullName()}
-                                    src={faker.image.avatar()}
+                                    alt={current_conversation?.name}
+                                    // src={avatarLink!=="" ? avatarLink : faker.image.avatar()}
+                                    src={current_conversation?.img}
                                 />
                             </StyledBadge>
                         </Box>
                         <Stack spacing={0.2}>
-                            <Typography variant="subtitle2">
-                                {faker.name.fullName()}
+                            <Typography variant="subtitle2" onClick={() => {console.log(current_conversation.img)}}>
+                                {current_conversation?.name}
                             </Typography>
                             <Typography variant="caption">Online</Typography>
                         </Stack>

@@ -11,7 +11,9 @@ import StyledInputBase from "../../components/Search/StyledInputBase";
 import ChatElement from "../../components/ChatElement";
 import Friends from "../../sections/main/Friends";
 import { socket } from "../../socket";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { FetchDirectConversations } from "../../redux/slices/conversation";
+
 
 
 // container for all in search
@@ -21,11 +23,15 @@ const Chats = () => {
     const [openDialog, setOpenDialog] = useState(false)
     const theme = useTheme();
 
+    const dispatch = useDispatch();
+
     const { conversations } = useSelector((state) => state.conversation.direct_chat)
 
     useEffect(() => {
         socket.emit("get_direct_conversations", { user_id }, (data) => {
-
+            console.log(data); // this data is the list of conversations
+            // dispatch action
+            dispatch(FetchDirectConversations({ conversations: data }));
         })
     }, [])
 

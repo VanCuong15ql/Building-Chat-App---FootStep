@@ -55,6 +55,7 @@ export function LoginUser(formValues) {
                 token: response.data.token
             }))
             window.localStorage.setItem("user_id", response.data.user_id)
+            window.localStorage.setItem("token_access", response.data.token)
 
             dispatch(showSnackbar({ severity: "success", message: response.data.message }))
         }).catch(function (error) {
@@ -68,8 +69,9 @@ export function LoginUser(formValues) {
 export function LogoutUser() {
     return async (dispatch, getState) => {
         window.localStorage.removeItem("user_id");
+        window.localStorage.removeItem("token_access");
+        
         dispatch(slice.actions.SignOut());
-
     }
 }
 
