@@ -34,7 +34,8 @@ const Conversation = ({ isMobile, menu }) => {
 
         socket.emit("get_messages", { conversation_id: current?.id }, (data) => {
             // data => list of messages
-            console.log(data, "List of messages");
+            console.log("List of messages")
+            console.log(data);
             dispatch(FetchCurrentMessages({ messages: data }));
         });
 

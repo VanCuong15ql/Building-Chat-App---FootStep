@@ -58,56 +58,61 @@ const TextMsg = ({ el, menu }) => {
     };
     return (
         <Stack direction="row" justifyContent={el.incoming ? "start" : "end"}>
-        <Box
-            px={1.5}
-            py={1.5}
-            sx={{
-            backgroundColor: el.incoming
-                ? alpha(theme.palette.background.default, 1)
-                : theme.palette.primary.main,
-            borderRadius: 1.5,
-            width: "max-content",
-            }}
-        >
-            {(el.subtype === "Text" || el.subtype === "File" || el.subtype === "Link") && 
-                <Typography
-                    variant="body2"
-                    onClick={clickTypography}
-                    color={el.incoming ? theme.palette.text : "#fff"}
-                >
-                    {el.subtype === "File" ? "📄" : ""}
-                    {el.message}
-                </Typography>
-            }
+            <Box
+                px={1.5}
+                py={1.5}
+                sx={{
+                    backgroundColor: el.incoming
+                        ? alpha(theme.palette.background.default, 1)
+                        : theme.palette.primary.main,
+                    borderRadius: 1.5,
+                    width: "max-content",
+                }}
+            >
+                {(el.subtype === "Text" || el.subtype === "File" || el.subtype === "Link") &&
+                    <Typography
+                        variant="body2"
+                        onClick={clickTypography}
+                        color={el.incoming ? theme.palette.text : "#fff"}
+                    >
+                        {el.subtype === "File" ? "📄" : ""}
+                        {el.message}
+                    </Typography>
 
-            {el.subtype === "Image" && 
-                <Typography
-                    variant="body2"
-                    onClick={clickTypography}
-                    color={el.incoming ? theme.palette.text : "#fff"}
-                >
-                    <img 
-                        src={el.file}
-                        alt="chat-image"
-                        style={{maxHeight: 400, maxWidth: 400}}
-                    />
-                </Typography>
-            }
+                }
 
-            {el.subtype === "Video" && 
-                <Typography
-                    variant="body2"
-                    onClick={clickTypography}
-                    color={el.incoming ? theme.palette.text : "#fff"}
-                >
-                    <video controls loop style={{maxHeight: 500, maxWidth: 500}}>
-                        <source src={el.file} type="video/mp4"/>
-                    </video>
-                </Typography>
-            }
+                {el.subtype === "Image" &&
+                    <Typography
+                        variant="body2"
+                        onClick={clickTypography}
+                        color={el.incoming ? theme.palette.text : "#fff"}
+                    >
+                        <img
+                            src={el.file}
+                            alt="chat-image"
+                            style={{ maxHeight: 400, maxWidth: 400 }}
+                        />
+                    </Typography>
+                }
 
-        </Box>
-        {menu && <MessageOption />}
+                {el.subtype === "Video" &&
+                    <Typography
+                        variant="body2"
+                        onClick={clickTypography}
+                        color={el.incoming ? theme.palette.text : "#fff"}
+                    >
+                        <video controls loop style={{ maxHeight: 500, maxWidth: 500 }}>
+                            <source src={el.file} type="video/mp4" />
+                        </video>
+                    </Typography>
+                }
+                <Typography variant="caption"
+                    style={{ fontSize: '11px', opacity: 0.5 }}
+                    color={el.incoming ? theme.palette.text : "#fff"}>
+                    {el.timestamp}
+                </Typography>
+            </Box>
+            {menu && <MessageOption />}
         </Stack>
     );
 };
@@ -126,19 +131,26 @@ const MediaMsg = ({ el }) => {
                     width: "max-content",
                 }}
             >
-                <Stack spacing={1}>
-                    <img
-                        src={el.img}
-                        alt={el.message}
-                        style={{ maxHeight: 210, borderRadius: "10px" }}
-                    />
-                    <Typography
-                        variant="body2"
-                        color={el.incoming ? theme.palette.text : "#fff"}
-                    >
-                        {el.message}
-                    </Typography>
+                <Stack direction={"row"}>
+                    <Stack spacing={1}>
+                        <img
+                            src={el.img}
+                            alt={el.message}
+                            style={{ maxHeight: 210, borderRadius: "10px" }}
+                        />
+                        <Typography
+                            variant="body2"
+                            color={el.incoming ? theme.palette.text : "#fff"}
+                        >
+                            {el.message}
+                        </Typography>
+                    </Stack>
                 </Stack>
+                <Typography variant="caption"
+                    style={{ fontSize: '11px', opacity: 0.5 }}
+                    color={el.incoming ? theme.palette.text : "#fff"}>
+                    {el.timestamp}
+                </Typography>
             </Box>
             <MessageOption />
         </Stack>
@@ -183,6 +195,11 @@ const DocMsg = ({ el }) => {
                         {el.message}
                     </Typography>
                 </Stack>
+                <Typography variant="caption"
+                    style={{ fontSize: '11px', opacity: 0.5 }}
+                    color={el.incoming ? theme.palette.text : "#fff"}>
+                    {el.timestamp}
+                </Typography>
             </Box>
             <MessageOption />
         </Stack>
@@ -229,6 +246,11 @@ const LinkMsg = ({ el }) => {
                         <div dangerouslySetInnerHTML={{ __html: el.message }}></div>
                     </Typography>
                 </Stack>
+                <Typography variant="caption"
+                    style={{ fontSize: '11px', opacity: 0.5 }}
+                    color={el.incoming ? theme.palette.text : "#fff"}>
+                    {el.timestamp}
+                </Typography>
             </Box>
             <MessageOption />
         </Stack>
@@ -271,6 +293,11 @@ const ReplyMsg = ({ el }) => {
                         {el.reply}
                     </Typography>
                 </Stack>
+                <Typography variant="caption"
+                    style={{ fontSize: '11px', opacity: 0.5 }}
+                    color={el.incoming ? theme.palette.text : "#fff"}>
+                    {el.timestamp}
+                </Typography>
             </Box>
             <MessageOption />
         </Stack>
