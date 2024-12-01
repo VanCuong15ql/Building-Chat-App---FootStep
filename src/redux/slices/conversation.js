@@ -24,6 +24,7 @@ const slice = createSlice({
                     (elm) => elm._id.toString() !== user_id
                 );
                 let last_msg = el.messages.length > 0 ? el.messages[el.messages.length - 1] : "";
+                let time = new Date(last_msg ? last_msg.created_at : Date.now());
                 if (last_msg !== "") {
                     if (last_msg.type === "Image") last_msg = "Sent an image";
                     if (last_msg.type === "Video") last_msg = "Sent a video";
@@ -39,7 +40,7 @@ const slice = createSlice({
                     img: this_user?.avatar ?? faker.image.avatar(),
                     msg: last_msg,
 
-                    time: "9:36",
+                    time: `${time.getHours()}:${time.getMinutes()}`,
                     unread: 0,
                     pinned: false,
                     about: this_user?.about,
@@ -59,14 +60,22 @@ const slice = createSlice({
                         const user = this_conversation.participants.find(
                             (elm) => elm._id.toString() !== user_id
                         );
+                        let last_msg = this_conversation.messages.length > 0 ? this_conversation.messages[this_conversation.messages.length - 1] : "";
+                        let time = new Date(last_msg ? last_msg.created_at : Date.now());
+                        if (last_msg !== "") {
+                            if (last_msg.type === "Image") last_msg = "Sent an image";
+                            if (last_msg.type === "Video") last_msg = "Sent a video";
+                            if (last_msg.type === "File") last_msg = "Sent a file";
+                            if (last_msg.type === "Text") last_msg = last_msg.text;
+                        }
                         return {
                             id: this_conversation._id,
                             user_id: user._id,
                             name: `${user.firstName} ${user.lastName}`,
                             online: user.status === "Online",
-                            img: faker.image.avatar(),
-                            msg: this_conversation.messages.length > 0 ? this_conversation.messages[this_conversation.messages.length - 1].text : "No messages",
-                            time: "9:36",
+                            img: user?.avatar ?? faker.image.avatar(),
+                            msg: last_msg,
+                            time: `${time.getHours()}:${time.getMinutes()}`,
                             unread: 0,
                             pinned: false,
                         };
@@ -82,14 +91,22 @@ const slice = createSlice({
             state.direct_chat.conversations = state.direct_chat.conversations.filter(
                 (el) => el.id !== this_conversation._id
             );
+            let last_msg = this_conversation.messages.length > 0 ? this_conversation.messages[this_conversation.messages.length - 1] : "";
+            let time = new Date(last_msg ? last_msg.created_at : Date.now());
+            if (last_msg !== "") {
+                if (last_msg.type === "Image") last_msg = "Sent an image";
+                if (last_msg.type === "Video") last_msg = "Sent a video";
+                if (last_msg.type === "File") last_msg = "Sent a file";
+                if (last_msg.type === "Text") last_msg = last_msg.text;
+            }
             state.direct_chat.conversations.push({
                 id: this_conversation._id,
                 user_id: user?._id,
                 name: `${user?.firstName} ${user?.lastName}`,
                 online: user?.status === "Online",
-                img: faker.image.avatar(),
-                msg: faker.music.songName(),
-                time: "9:36",
+                img: user?.avatar ?? faker.image.avatar(),
+                msg: last_msg,
+                time: `${time.getHours()}:${time.getMinutes()}`,
                 unread: 0,
                 pinned: false,
             });

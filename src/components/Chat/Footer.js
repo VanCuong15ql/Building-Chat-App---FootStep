@@ -18,6 +18,8 @@ import {
     Sticker,
     User,
 } from "phosphor-react";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import { useTheme, styled } from "@mui/material/styles";
 import { Close } from "@mui/icons-material";
 import { socket } from "../../socket";
@@ -185,13 +187,25 @@ const ChatInput = ({
     );
 };
 
+function linkify(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(
+        urlRegex,
+        (url) => `<a href="${url}" target="_blank">${url}</a>`
+    );
+}
+function containsUrl(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return urlRegex.test(text);
+}
+
 const Footer = () => {
     const theme = useTheme();
     const { current_conversation } = useSelector(
         (state) => state.conversation.direct_chat
     );
     const user_id = window.localStorage.getItem("user_id");
-    const { room_id } = useSelector((state) => state.app);
+    const { sidebar, room_id } = useSelector((state) => state.app);
 
     const [openPicker, setOpenPicker] = React.useState(false);
     const [value, setValue] = useState("");
@@ -199,6 +213,24 @@ const Footer = () => {
     const [reviewImage, setReviewImage] = useState(null);
     const inputRef = useRef(null);
     const fileInputRef = useRef(null);
+
+    function handleEmojiClick(emoji) {
+        const input = inputRef.current;
+    
+        if (input) {
+          const selectionStart = input.selectionStart;
+          const selectionEnd = input.selectionEnd;
+    
+          setValue(
+            value.substring(0, selectionStart) +
+              emoji +
+              value.substring(selectionEnd)
+          );
+    
+          // Move the cursor to the end of the inserted emoji
+          input.selectionStart = input.selectionEnd = selectionStart + 1;
+        }
+    }
 
     const handleFileUpload = () => {
         if (fileInputRef.current) {
@@ -240,11 +272,11 @@ const Footer = () => {
         if (current_conversation.user_id) to = current_conversation.user_id;
         if (value) {
             socket.emit("text_message", {
-                message: value,
+                message: linkify(value),
                 conversation_id: room_id,
                 from: user_id,
                 to: to,
-                type: "Text",
+                type: containsUrl(value) ? "Link" : "Text",
             });
             setValue(""); 
         }
@@ -287,6 +319,25 @@ const Footer = () => {
             >
                 <Stack direction="row" alignItems={"center"} spacing={2}>
                     <Stack sx={{ width: "100%" }}>
+
+                        <Box
+                            style={{
+                                zIndex: 10,
+                                position: "fixed",
+                                display: openPicker ? "inline" : "none",
+                                bottom: 81,
+                                right: sidebar.open ? 420 : 100,
+                            }}
+                        >
+                            <Picker
+                                theme={theme.palette.mode}
+                                data={data}
+                                onEmojiSelect={(emoji) => {
+                                    handleEmojiClick(emoji.native);
+                                }}
+                            />
+                        </Box>
+
                         <ChatInput
                             inputRef={inputRef}
                             value={value}

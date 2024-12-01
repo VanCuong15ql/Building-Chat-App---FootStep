@@ -54,6 +54,7 @@ const TextMsg = ({ el, menu }) => {
     const theme = useTheme();
     const clickTypography = () => {
         if (el.subtype === "File") window.open(el.file, "_blank");
+        if (el.subtype === "Link") window.open(el.message, "_blank");
     };
     return (
         <Stack direction="row" justifyContent={el.incoming ? "start" : "end"}>
@@ -68,12 +69,13 @@ const TextMsg = ({ el, menu }) => {
             width: "max-content",
             }}
         >
-            {(el.subtype === "Text" || el.subtype === "File") && 
+            {(el.subtype === "Text" || el.subtype === "File" || el.subtype === "Link") && 
                 <Typography
                     variant="body2"
                     onClick={clickTypography}
                     color={el.incoming ? theme.palette.text : "#fff"}
                 >
+                    {el.subtype === "File" ? "📄" : ""}
                     {el.message}
                 </Typography>
             }
