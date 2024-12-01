@@ -24,8 +24,14 @@ const slice = createSlice({
                     (elm) => elm._id.toString() !== user_id
                 );
                 let last_msg = el.messages.length > 0 ? el.messages[el.messages.length - 1] : "";
-                let time = new Date(last_msg ? last_msg.created_at : Date.now());
+                let time_display = "";
                 if (last_msg !== "") {
+                    // get time
+                    let last_time = new Date(last_msg.created_at);
+                    const hours = last_time.getHours().toString().padStart(2, '0');
+                    const minutes = last_time.getMinutes().toString().padStart(2, '0');
+                    time_display = `${hours}:${minutes}`;
+
                     if (last_msg.type === "Image") last_msg = "Sent an image";
                     if (last_msg.type === "Video") last_msg = "Sent a video";
                     if (last_msg.type === "File") last_msg = "Sent a file";
@@ -40,7 +46,7 @@ const slice = createSlice({
                     img: this_user?.avatar ?? faker.image.avatar(),
                     msg: last_msg,
 
-                    time: `${time.getHours()}:${time.getMinutes()}`,
+                    time: time_display,
                     unread: 0,
                     pinned: false,
                     about: this_user?.about,
@@ -116,15 +122,18 @@ const slice = createSlice({
         },
         fetchCurrentMessages(state, action) {
             const messages = action.payload.messages;
-            const formatted_messages = messages.map((el) => ({
-                id: el._id,
-                type: "msg",
-                subtype: el.type,
-                message: el.text,
-                file: el?.file ?? "",
-                incoming: el.to === user_id,
-                outgoing: el.from === user_id,
-            }));
+            const formatted_messages = messages.map((el) => {
+                return {
+                    id: el._id,
+                    type: "msg",
+                    subtype: el.type,
+                    message: el.text,
+                    file: el?.file ?? "",
+                    incoming: el.to === user_id,
+                    outgoing: el.from === user_id,
+                    timestamp: el.created_at
+                };
+            });
             state.direct_chat.current_messages = formatted_messages;
         },
         addDirectMessage(state, action) {
