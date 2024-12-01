@@ -67,8 +67,15 @@ const slice = createSlice({
                             (elm) => elm._id.toString() !== user_id
                         );
                         let last_msg = this_conversation.messages.length > 0 ? this_conversation.messages[this_conversation.messages.length - 1] : "";
-                        let time = new Date(last_msg ? last_msg.created_at : Date.now());
+                        // let time = new Date(last_msg ? last_msg.created_at : Date.now());
+                        let time_display = "";
                         if (last_msg !== "") {
+                            // get time
+                            let last_time = new Date(last_msg.created_at);
+                            const hours = last_time.getHours().toString().padStart(2, '0');
+                            const minutes = last_time.getMinutes().toString().padStart(2, '0');
+                            time_display = `${hours}:${minutes}`;
+
                             if (last_msg.type === "Image") last_msg = "Sent an image";
                             if (last_msg.type === "Video") last_msg = "Sent a video";
                             if (last_msg.type === "File") last_msg = "Sent a file";
@@ -81,7 +88,7 @@ const slice = createSlice({
                             online: user.status === "Online",
                             img: user?.avatar ?? faker.image.avatar(),
                             msg: last_msg,
-                            time: `${time.getHours()}:${time.getMinutes()}`,
+                            time: time_display,
                             unread: 0,
                             pinned: false,
                         };
@@ -98,8 +105,15 @@ const slice = createSlice({
                 (el) => el.id !== this_conversation._id
             );
             let last_msg = this_conversation.messages.length > 0 ? this_conversation.messages[this_conversation.messages.length - 1] : "";
-            let time = new Date(last_msg ? last_msg.created_at : Date.now());
+            // let time = new Date(last_msg ? last_msg.created_at : Date.now());
+            let time_display = "";
             if (last_msg !== "") {
+                // get time
+                let last_time = new Date(last_msg.created_at);
+                const hours = last_time.getHours().toString().padStart(2, '0');
+                const minutes = last_time.getMinutes().toString().padStart(2, '0');
+                time_display = `${hours}:${minutes}`;
+
                 if (last_msg.type === "Image") last_msg = "Sent an image";
                 if (last_msg.type === "Video") last_msg = "Sent a video";
                 if (last_msg.type === "File") last_msg = "Sent a file";
@@ -112,7 +126,7 @@ const slice = createSlice({
                 online: user?.status === "Online",
                 img: user?.avatar ?? faker.image.avatar(),
                 msg: last_msg,
-                time: `${time.getHours()}:${time.getMinutes()}`,
+                time: time_display,
                 unread: 0,
                 pinned: false,
             });
@@ -123,6 +137,11 @@ const slice = createSlice({
         fetchCurrentMessages(state, action) {
             const messages = action.payload.messages;
             const formatted_messages = messages.map((el) => {
+                let timestamp = new Date(el.created_at);
+                let hours = timestamp.getHours().toString().padStart(2, '0');
+                let minutes = timestamp.getMinutes().toString().padStart(2, '0');
+                let time_display = `${hours}:${minutes}`;
+
                 return {
                     id: el._id,
                     type: "msg",
@@ -131,7 +150,7 @@ const slice = createSlice({
                     file: el?.file ?? "",
                     incoming: el.to === user_id,
                     outgoing: el.from === user_id,
-                    timestamp: el.created_at
+                    timestamp: time_display
                 };
             });
             state.direct_chat.current_messages = formatted_messages;
@@ -139,7 +158,6 @@ const slice = createSlice({
         addDirectMessage(state, action) {
             state.direct_chat.current_messages.push(action.payload.message);
         }
-
     }
 })
 
