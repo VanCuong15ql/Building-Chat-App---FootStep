@@ -35,13 +35,10 @@ const slice = createSlice({
                     user_id: this_user?._id,
                     name: `${this_user?.firstName} ${this_user?.lastName}`,
                     online: this_user?.status === "Online",
-<<<<<<< HEAD
-                    img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${this_user?.avatar}`,
-                    msg: el.messages.slice(-1)[0].text,
-=======
+
                     img: this_user?.avatar ?? faker.image.avatar(),
                     msg: last_msg,
->>>>>>> feature/FileMess
+
                     time: "9:36",
                     unread: 0,
                     pinned: false,

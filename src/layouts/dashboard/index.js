@@ -4,11 +4,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import SideBar from "./SideBar"; // SideNav+ProfileMenu
 import { useDispatch, useSelector } from "react-redux";
-<<<<<<< HEAD
-import { FetchUserProfile, SelectConversation, showSnackbar } from "../../redux/slices/app";
-=======
-import { SelectConversation, showSnackbar, slice } from "../../redux/slices/app";
->>>>>>> feature/FileMess
+
+import { FetchUserProfile, SelectConversation, showSnackbar, slice } from "../../redux/slices/app";
+
 import { connectSocket, socket } from "../../socket";
 import {
   AddDirectConversation,
@@ -34,10 +32,9 @@ import {
 
 const DashboardLayout = () => {
   const isDesktop = useResponsive("up", "md");
-<<<<<<< HEAD
+
   const dispatch = useDispatch();
-=======
->>>>>>> feature/FileMess
+
   const user_id = window.localStorage.getItem("user_id");
   const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
     (state) => state.audioCall

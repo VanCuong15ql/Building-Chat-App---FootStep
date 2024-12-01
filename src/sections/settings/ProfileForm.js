@@ -19,28 +19,6 @@ const ProfileForm = () => {
   }, []);
 
   const { user } = useSelector((state) => state.app);
-
-<<<<<<< HEAD
-  const ProfileSchema = Yup.object().shape({
-    firstName: Yup.string().required("Name is required"),
-    about: Yup.string().required("About is required"),
-    avatar: Yup.string().required("Avatar is required").nullable(true),
-  });
-
-  // old schema
-  // const loginSchema = Yup.object().shape({
-  //     name: Yup.string().required("Name is required"),
-  //     about: Yup.string().required("About is required"),
-  //     avatarUrl: Yup.string().required("Avatar is required").nullable(true),
-  // });
-
-  const defaultValues = {
-    // ERROR: can not get data from user
-    firstName: user?.firstName,
-    about: user?.about,
-    avatar: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${user?.avatar}`,
-  };
-=======
     const ProfileSchema = Yup.object().shape({
         firstName: Yup.string().required("First name is required").nullable(true),
         lastName: Yup.string().required("Last name is required").nullable(true),
@@ -57,7 +35,6 @@ const ProfileForm = () => {
         avatar: null,
         avatar_file: null,
     };
->>>>>>> feature/FileMess
 
   const methods = useForm({
     resolver: yupResolver(ProfileSchema),
@@ -75,33 +52,6 @@ const ProfileForm = () => {
   } = methods;
 
   const values = watch(); // get all values from the form
-
-<<<<<<< HEAD
-  // need S3 bucket, fix in redux/slices/app.js
-  const onSubmit = async (data) => {
-    try {
-      // api submit
-      console.log("Data", data);
-      dispatch(
-        UpdateUserProfile({
-          firstName: data?.firstName,
-          about: data?.about,
-          avatar: file,
-        })
-      );
-    } catch (error) {
-      console.error(error);
-      // reset();
-      // setError("afterSubmit", {
-      //     ...error,
-      //     message: error.message,
-      // });
-    }
-  };
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-=======
     // call when user drop img file into web
     const handleDrop = useCallback((acceptedFiles) => {
         const file = acceptedFiles[0];
@@ -122,50 +72,10 @@ const ProfileForm = () => {
             );
         }
     }, [setValue]);
->>>>>>> feature/FileMess
-
       setFile(file);
       const newFile = Object.assign(file, {
         preview: URL.createObjectURL(file),
       });
-
-<<<<<<< HEAD
-      if (file) {
-        setValue("avatar", newFile, { shouldValidate: true });
-      }
-    },
-    [setValue]
-  );
-  return (
-    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={4}>
-        <RHFUploadAvatar name="avatar" maxSize={3145728} onDrop={handleDrop} />
-        <RHFTextField
-          helperText={"This name is visible to your contacts"}
-          name="firstName"
-          label="First Name"
-        />
-        <RHFTextField
-          multiline
-          rows={4}
-          maxRows={5}
-          name="about"
-          label="About"
-        />
-        <Stack direction={"row"} justifyContent="end">
-          <Button
-            color="primary"
-            size="large"
-            type="submit"
-            variant="contained"
-          >
-            Save
-          </Button>
-        </Stack>
-      </Stack>
-    </FormProvider>
-  );
-=======
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={4}>
@@ -209,7 +119,6 @@ const ProfileForm = () => {
             </Stack>
         </FormProvider>
     );
->>>>>>> feature/FileMess
 };
 
 export default ProfileForm;
