@@ -26,7 +26,7 @@ const ResetPasswordForm = () => {
   });
   // auth test
   const defaultValues = {
-    email: "vancuong@gmail.com",
+    email: "",
 
   };
   const methods = useForm({

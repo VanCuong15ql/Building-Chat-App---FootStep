@@ -27,8 +27,8 @@ const LoginForm = () => {
   });
   // auth test
   const defaultValues = {
-    email: "vancuong@gmail.com",
-    password: "cuongdeptrai",
+    email: "",
+    password: "",
   };
   const methods = useForm({
     resolver: yupResolver(loginSchema),

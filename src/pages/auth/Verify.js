@@ -12,7 +12,7 @@ const Verify = () => {
 
                 <Stack direction={"row"} spacing={0.5}>
                     <Typography variant="body2">
-                        Sent to email (vancuong@gmail.com)
+                        Sent your email
                     </Typography>
                 </Stack>
             </Stack>
