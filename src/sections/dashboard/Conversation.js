@@ -109,7 +109,7 @@ const TextMsg = ({ el, menu }) => {
                 <Typography variant="caption"
                     style={{ fontSize: '11px', opacity: 0.5 }}
                     color={el.incoming ? theme.palette.text : "#fff"}>
-                    {el.timestamp}
+                    {el.timestamp ? el.timestamp : new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                 </Typography>
             </Box>
             {menu && <MessageOption />}
@@ -149,7 +149,7 @@ const MediaMsg = ({ el }) => {
                 <Typography variant="caption"
                     style={{ fontSize: '11px', opacity: 0.5 }}
                     color={el.incoming ? theme.palette.text : "#fff"}>
-                    {el.timestamp}
+                    {el.timestamp ? el.timestamp : new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                 </Typography>
             </Box>
             <MessageOption />
@@ -198,7 +198,7 @@ const DocMsg = ({ el }) => {
                 <Typography variant="caption"
                     style={{ fontSize: '11px', opacity: 0.5 }}
                     color={el.incoming ? theme.palette.text : "#fff"}>
-                    {el.timestamp}
+                    {el.timestamp ? el.timestamp : new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                 </Typography>
             </Box>
             <MessageOption />
@@ -249,7 +249,7 @@ const LinkMsg = ({ el }) => {
                 <Typography variant="caption"
                     style={{ fontSize: '11px', opacity: 0.5 }}
                     color={el.incoming ? theme.palette.text : "#fff"}>
-                    {el.timestamp}
+                    {el.timestamp ? el.timestamp : new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                 </Typography>
             </Box>
             <MessageOption />
@@ -296,7 +296,7 @@ const ReplyMsg = ({ el }) => {
                 <Typography variant="caption"
                     style={{ fontSize: '11px', opacity: 0.5 }}
                     color={el.incoming ? theme.palette.text : "#fff"}>
-                    {el.timestamp}
+                    {el.timestamp ? el.timestamp : new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                 </Typography>
             </Box>
             <MessageOption />
