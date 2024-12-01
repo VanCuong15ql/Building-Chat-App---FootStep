@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Box, Divider, IconButton, Stack, Avatar, Switch, Menu, MenuItem, Fade } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Gear } from "phosphor-react";
@@ -7,9 +7,10 @@ import useSettings from "../../hooks/useSettings";
 import { faker } from "@faker-js/faker";
 import Logo from "../../assets/Images/logo.ico";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LogoutUser } from "../../redux/slices/auth";
 import { socket } from "../../socket";
+import axios from "../../utils/axios";
 
 const getPath = (index) => {
     switch (index) {
@@ -48,6 +49,8 @@ const SideBar = () => {
     const [selected, setSelected] = useState(0);
     const { onToggleMode } = useSettings();
 
+    const {user} = useSelector((state) => state.app);
+
     // for user setting
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -59,6 +62,26 @@ const SideBar = () => {
     };
 
     const user_id = window.localStorage.getItem("user_id");
+
+    const [avatarLink, setAvatarLink] = useState("");
+    useEffect(() => {
+        async function getUser() {
+            try {
+                let data = await axios.get(`/user/get-user-by-id/${user_id}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${window.localStorage.getItem("token_access")}`,
+                    },
+                });
+                if (!(data && data.data && data.data.data && data.data.data.avatar)) return;
+                console.log(`get user by id ${user_id}: `, data.data.data);
+                setAvatarLink(data.data.data.avatar);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getUser();
+    }, []);
 
     return (
         <Box p={2}
@@ -140,8 +163,10 @@ const SideBar = () => {
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
                         onClick={handleClick}
-                        alt={faker.name.fullName()}
-                        src={faker.image.avatar()}
+                        // alt={faker.name.fullName()}
+                        // src={faker.image.avatar()}
+                        alt={"avatar"}
+                        src={avatarLink}
                     />
                     <Menu
                         MenuListProps={{

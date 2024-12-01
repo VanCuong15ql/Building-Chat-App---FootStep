@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import { faker } from "@faker-js/faker";
 import { useDispatch } from "react-redux";
 import { SelectConversation } from "../redux/slices/app";
+import axios from "../utils/axios";
 
 const truncateText = (string, n) => {
     return string?.length > n ? `${string?.slice(0, n)}...` : string;
@@ -44,9 +45,29 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     },
 }));
 
-const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
+const ChatElement = ({ id, user_id, name, img, msg, time, unread, online }) => {
     const theme = useTheme();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+
+    // const [avatarLink, setAvatarLink] = React.useState("");
+    // useEffect(() => {
+    //     async function getUser() {
+    //         try {
+    //             let data = await axios.get(`/user/get-user-by-id/${user_id}`, {
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     Authorization: `Bearer ${window.localStorage.getItem("token_access")}`,
+    //                 },
+    //             });
+    //             if (!(data && data.data && data.data.data && data.data.data.avatar)) return;
+    //             console.log(`get user by id ${user_id}: `, data.data.data);
+    //             setAvatarLink(data.data.data.avatar);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     };
+    //     getUser();
+    // }, []);
 
     return (
         <Box
@@ -60,13 +81,24 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
             }} p={2}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Stack direction="row" spacing={2}>
-                    {online ? <StyledBadge
+                    {online 
+                    ? 
+                    <StyledBadge
                         overlap="circular"
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                         variant="dot"
                     >
-                        <Avatar src={faker.image.avatar()} />
-                    </StyledBadge> : <Avatar src={faker.image.avatar()} />}
+                        <Avatar 
+                            // src={avatarLink!=="" ? avatarLink : faker.image.avatar()} 
+                            src={img}
+                        />
+                    </StyledBadge> 
+                    : 
+                    <Avatar 
+                        // src={avatarLink!=="" ? avatarLink : faker.image.avatar()} 
+                        src={img}
+                    />
+                    }
 
                     <Stack spacing={0.3}>
                         <Typography variant="subtitle2">{name}</Typography>

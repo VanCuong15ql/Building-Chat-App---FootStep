@@ -4,6 +4,7 @@ import { Typography } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import AvatarPreview from "./preview/AvatarPreview";
 import { Image } from "phosphor-react";
+import AvatarPreview2 from "./preview/AvatarPreview2";
 
 const StyledDropZone = styled("div")(({ theme }) => ({
     width: 144,
@@ -51,6 +52,7 @@ export default function UploadAvatar({
     disabled,
     helperText,
     sx,
+    avatar_link,
     ...other
 }) {
     const {
@@ -99,6 +101,7 @@ export default function UploadAvatar({
                 <input {...getInputProps()} />
 
                 {hasFile && <AvatarPreview file={file} />}
+                {avatar_link && (!hasFile) && <AvatarPreview2 imgUrl={avatar_link} />}
 
                 <StyledPlaceholder
                     className="placeholder"

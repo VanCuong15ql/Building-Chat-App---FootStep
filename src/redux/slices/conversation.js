@@ -23,13 +23,25 @@ const slice = createSlice({
                 const this_user = el.participants.find(
                     (elm) => elm._id.toString() !== user_id
                 );
+                let last_msg = el.messages.length > 0 ? el.messages[el.messages.length - 1] : "";
+                if (last_msg !== "") {
+                    if (last_msg.type === "Image") last_msg = "Sent an image";
+                    if (last_msg.type === "Video") last_msg = "Sent a video";
+                    if (last_msg.type === "File") last_msg = "Sent a file";
+                    if (last_msg.type === "Text") last_msg = last_msg.text;
+                }
                 return {
                     id: el._id,
                     user_id: this_user?._id,
                     name: `${this_user?.firstName} ${this_user?.lastName}`,
                     online: this_user?.status === "Online",
+<<<<<<< HEAD
                     img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${this_user?.avatar}`,
                     msg: el.messages.slice(-1)[0].text,
+=======
+                    img: this_user?.avatar ?? faker.image.avatar(),
+                    msg: last_msg,
+>>>>>>> feature/FileMess
                     time: "9:36",
                     unread: 0,
                     pinned: false,
@@ -95,6 +107,7 @@ const slice = createSlice({
                 type: "msg",
                 subtype: el.type,
                 message: el.text,
+                file: el?.file ?? "",
                 incoming: el.to === user_id,
                 outgoing: el.from === user_id,
             }));

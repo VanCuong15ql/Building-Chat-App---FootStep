@@ -4,7 +4,11 @@ import { Navigate, Outlet } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import SideBar from "./SideBar"; // SideNav+ProfileMenu
 import { useDispatch, useSelector } from "react-redux";
+<<<<<<< HEAD
 import { FetchUserProfile, SelectConversation, showSnackbar } from "../../redux/slices/app";
+=======
+import { SelectConversation, showSnackbar, slice } from "../../redux/slices/app";
+>>>>>>> feature/FileMess
 import { connectSocket, socket } from "../../socket";
 import {
   AddDirectConversation,
@@ -30,7 +34,10 @@ import {
 
 const DashboardLayout = () => {
   const isDesktop = useResponsive("up", "md");
+<<<<<<< HEAD
   const dispatch = useDispatch();
+=======
+>>>>>>> feature/FileMess
   const user_id = window.localStorage.getItem("user_id");
   const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
     (state) => state.audioCall
@@ -38,7 +45,7 @@ const DashboardLayout = () => {
   const { open_video_notification_dialog, open_video_dialog } = useSelector(
     (state) => state.videoCall
   );
-
+  const { user } = useSelector((state) => state.app);
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { conversations, current_conversation } = useSelector(
     (state) => state.conversation.direct_chat
@@ -76,8 +83,13 @@ const DashboardLayout = () => {
       window.onload();
 
       if (!socket) {
+        console.log(Date.now(), "connecting socket")
         connectSocket(user_id);
       }
+
+      socket.on("avatar_saved", (data) => {
+        dispatch(slice.actions.updateUser({ user: data.user }));    
+      });
 
       socket.on("audio_call_notification", (data) => {
         // TODO => dispatch an action to add this in call_queue
@@ -104,6 +116,7 @@ const DashboardLayout = () => {
               type: "msg",
               subtype: message.type,
               message: message.text,
+              file: message?.file ?? "",
               incoming: message.to === user_id,
               outgoing: message.from === user_id,
             })

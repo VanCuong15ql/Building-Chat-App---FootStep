@@ -11,8 +11,6 @@ import {
 import { useTheme, alpha } from "@mui/material/styles";
 import { DotsThreeVertical, DownloadSimple, Image } from "phosphor-react";
 import { Message_options } from "../../data";
-import { Link } from "react-router-dom";
-import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import Embed from "react-embed";
 
 const MessageOption = () => {
@@ -52,29 +50,62 @@ const MessageOption = () => {
         </>
     );
 };
-const TextMsg = ({ el }) => {
+const TextMsg = ({ el, menu }) => {
     const theme = useTheme();
+    const clickTypography = () => {
+        if (el.subtype === "File") window.open(el.file, "_blank");
+    };
     return (
         <Stack direction="row" justifyContent={el.incoming ? "start" : "end"}>
-            <Box
-                px={1.5}
-                py={1.5}
-                sx={{
-                    backgroundColor: el.incoming
-                        ? alpha(theme.palette.background.default, 1)
-                        : theme.palette.primary.main,
-                    borderRadius: 1.5,
-                    width: "max-content",
-                }}
-            >
+        <Box
+            px={1.5}
+            py={1.5}
+            sx={{
+            backgroundColor: el.incoming
+                ? alpha(theme.palette.background.default, 1)
+                : theme.palette.primary.main,
+            borderRadius: 1.5,
+            width: "max-content",
+            }}
+        >
+            {(el.subtype === "Text" || el.subtype === "File") && 
                 <Typography
                     variant="body2"
+                    onClick={clickTypography}
                     color={el.incoming ? theme.palette.text : "#fff"}
                 >
                     {el.message}
                 </Typography>
-            </Box>
-            <MessageOption />
+            }
+
+            {el.subtype === "Image" && 
+                <Typography
+                    variant="body2"
+                    onClick={clickTypography}
+                    color={el.incoming ? theme.palette.text : "#fff"}
+                >
+                    <img 
+                        src={el.file}
+                        alt="chat-image"
+                        style={{maxHeight: 400, maxWidth: 400}}
+                    />
+                </Typography>
+            }
+
+            {el.subtype === "Video" && 
+                <Typography
+                    variant="body2"
+                    onClick={clickTypography}
+                    color={el.incoming ? theme.palette.text : "#fff"}
+                >
+                    <video controls loop style={{maxHeight: 500, maxWidth: 500}}>
+                        <source src={el.file} type="video/mp4"/>
+                    </video>
+                </Typography>
+            }
+
+        </Box>
+        {menu && <MessageOption />}
         </Stack>
     );
 };
