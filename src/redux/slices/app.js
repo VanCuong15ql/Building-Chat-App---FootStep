@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
-import {socket} from "../../socket";
+import { socket } from "../../socket";
 import { uuid } from "uuidv4";
 import S3 from "../../utils/s3";
 import { S3_BUCKET_NAME } from "../../config";
@@ -33,7 +33,7 @@ export const slice = createSlice({
     reducers: {
         fetchCallLogs(state, action) {
             state.call_logs = action.payload.call_logs;
-          },
+        },
         fetchUser(state, action) {
             state.user = action.payload.user;
         },
@@ -72,7 +72,7 @@ export const slice = createSlice({
             state.friends = action.payload.friends;
         },
         updateFriendRequests(state, action) {
-            state.friendRequests = action.payload.request;
+            state.friendRequests = action.payload.requests;
         },
         selectConversation(state, action) {
             state.chat_type = "individual";
@@ -207,22 +207,22 @@ export const SelectConversation = ({ room_id }) => {
 };
 export const FetchCallLogs = () => {
     return async (dispatch, getState) => {
-      axios
-        .get("/user/get-call-logs", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getState().auth.token}`,
-          },
-        })
-        .then((response) => {
-          console.log(response);
-          dispatch(slice.actions.fetchCallLogs({ call_logs: response.data.data }));
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        axios
+            .get("/user/get-call-logs", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${getState().auth.token}`,
+                },
+            })
+            .then((response) => {
+                console.log(response);
+                dispatch(slice.actions.fetchCallLogs({ call_logs: response.data.data }));
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
-  };
+};
 export const FetchUserProfile = () => {
     return async (dispatch, getState) => {
         axios.get("/user/get-me", {
@@ -259,8 +259,8 @@ export const UpdateUserProfile = (formValues) => {
         //         });
         //     }
         // );
-        if (formValues.avatar_file!==null) socket.emit("save_avatar", {file: formValues.avatar_file});
-        let newFormValues = {...formValues};
+        if (formValues.avatar_file !== null) socket.emit("save_avatar", { file: formValues.avatar_file });
+        let newFormValues = { ...formValues };
         delete newFormValues.avatar_file;
         delete newFormValues.avatar;
         axios.patch(
@@ -273,12 +273,12 @@ export const UpdateUserProfile = (formValues) => {
                 },
             }
         )
-        .then((response) => {
-            console.log(response);
-            dispatch(slice.actions.updateUser({ user: response.data.data }));
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .then((response) => {
+                console.log(response);
+                dispatch(slice.actions.updateUser({ user: response.data.data }));
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 };
