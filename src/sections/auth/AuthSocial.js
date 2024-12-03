@@ -8,10 +8,10 @@ const AuthSocial = () => {
             <Divider 
             sx={{my: 2.5, typography: "overline", color: "text.disabled", "&::before,::after": { borderTopStyle: "dashed", },}}
             >
-            Or
+            Slogan
             </Divider>
             <Stack direction={"row"} justifyContent={"center"} spacing={2}>
-                <IconButton>
+                {/* <IconButton>
                     <GoogleLogo color="#f00"></GoogleLogo>
                 </IconButton>
                 <IconButton color="inherit">
@@ -19,7 +19,8 @@ const AuthSocial = () => {
                 </IconButton>
                 <IconButton>
                     <TwitchLogo color="#1C9CEA"/>
-                </IconButton>
+                </IconButton> */}
+                Dấu chân nhỏ, câu chuyện lớn
             </Stack>
         </div>
     )
